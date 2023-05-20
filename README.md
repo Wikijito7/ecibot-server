@@ -1,15 +1,15 @@
-# Base Ktor Server (BKS)
-BKS is a base project used to create new servers for Wokis network.
+# ECIBot Server
+ECIBot server is a custom API for [ecibot.wokis.es](https://ecibot.wokis.es).
 
 ## Index
-* [Pre-requisites](https://github.com/Wikijito7/ECIBot#pre-requisites)
-* [How to run it](https://github.com/Wikijito7/ECIBot#how-to-run-it)
-* [How it works](https://github.com/Wikijito7/ECIBot#how-it-works)
-* [TODO](https://github.com/Wikijito7/ECIBot#todo)
+* [Pre-requisites](https://github.com/Wikijito7/ecibot-server#pre-requisites)
+* [How to run it](https://github.com/Wikijito7/ecibot-server#how-to-run-it)
+* [How it works](https://github.com/Wikijito7/ecibot-server#how-it-works)
+* [TODO](https://github.com/Wikijito7/ecibot-server#todo)
 
 ## Pre-requisites
 * Java 17.
-* Other requisites are already built in on `build.gradle.kts`. ([See more here](https://github.com/Wikijito7/base-ktor-server/blob/master/build.gradle.kts))
+* Other requisites are already built in on `build.gradle.kts`. ([See more here](https://github.com/Wikijito7/ecibot-server/blob/master/build.gradle.kts))
 * Knowledge using a terminal.
 * A little bit of time.
 * Optional: Coffee to drink while executing the app.
@@ -17,11 +17,12 @@ BKS is a base project used to create new servers for Wokis network.
 ## How to run it
 - After checking pre-requisites and having all dependencies installed, you can just go to `Application.kt` and run `fun main()`.
 - Also, you can generate a `fat-jar` by executing `fatJar` task on `build.gradle.kts`. After that, you may execute the app by double clicking it or by executing it on a terminal using `java -jar base-ktor-server.jar`.
+- Lastly, you can download last version of the project, check it out on [here](https://github.com/Wikijito7/ecibot-server/releases).
 
 ## How it works
 BKS is a base project made to be used on other projects for Wokis network. It has already user related routing and ready to use.
 
-You may configure some stuff on `app.conf` file. You can check it out [here](https://github.com/Wikijito7/base-ktor-server/blob/master/src/main/resources/app.conf).
+You may configure some stuff on `app.conf` file. You can check it out [here](https://github.com/Wikijito7/ecibot-server/blob/master/src/main/resources/app.conf).
 
 ### Routing
 Routes are rate limited. They can be used up to 100 times by default, but they may be modified to change this limitation.
@@ -54,8 +55,11 @@ It is rate limited using a custom rate limit. This routes can be used up to 10 t
 - `POST /logout`: removes user token. 
 - `DELETE /sessions`: removes all user tokens.
 
+### Sounds routing
+TODO:
+
 ## TODO:
-Any suggestion? Create a ticket [here](https://github.com/Wikijito7/base-ktor-server/issues).
+Any suggestion? Create a ticket [here](https://github.com/Wikijito7/ecibot-server/issues).
 
 ## Known bugs
-* Have you found one? Create a ticket [here](https://github.com/Wikijito7/base-ktor-server/issues).
+* Have you found one? Create a ticket [here](https://github.com/Wikijito7/ecibot-server/issues).
