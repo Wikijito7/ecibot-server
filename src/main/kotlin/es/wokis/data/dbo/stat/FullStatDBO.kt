@@ -7,5 +7,6 @@ data class FullStatDBO(
     val id: String,
     val commandName: String,
     val soundName: String?,
-    val username: String
+    val username: String,
+    val timestamp: Long
 )

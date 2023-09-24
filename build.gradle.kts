@@ -62,6 +62,8 @@ dependencies {
 
     // TOTP
     implementation("dev.turingcomplete:kotlin-onetimepassword:2.4.0")
+
+    implementation("commons-codec:commons-codec:1.16.0")
 }
 
 ktor {

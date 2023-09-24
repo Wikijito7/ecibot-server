@@ -5,6 +5,7 @@ import es.wokis.data.bo.StatsBO
 import es.wokis.data.dto.stats.StatDTO
 import es.wokis.data.dto.stats.StatsDTO
 
+@JvmName("statsBoToDTO")
 fun List<StatsBO>.toDTO() = this.map {
     it.toDTO()
 }
@@ -14,6 +15,7 @@ fun StatsBO.toDTO() = StatsDTO(
     stats.toDTO()
 )
 
+@JvmName("statBoToDTO")
 fun List<StatBO>.toDTO() = this.map {
     it.toDTO()
 }

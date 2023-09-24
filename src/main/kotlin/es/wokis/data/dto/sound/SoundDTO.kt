@@ -5,7 +5,7 @@ import es.wokis.utils.HashGenerator.generateHashWithSeed
 
 data class SoundDTO(
     @SerializedName("id")
-    val id: String? = null,
+    val id: Long? = null,
     @SerializedName("displayId")
     val displayId: String = generateHashWithSeed(),
     @SerializedName("title")
