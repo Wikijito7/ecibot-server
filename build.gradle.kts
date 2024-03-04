@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
@@ -69,19 +71,5 @@ dependencies {
 ktor {
     fatJar {
         archiveFileName.set("${rootProject.name}-${rootProject.version}.jar")
-    }
-
-    docker {
-        jreVersion.set(io.ktor.plugin.features.JreVersion.JRE_17)
-        localImageName.set(rootProject.name)
-        imageTag.set("1.0-preview")
-
-        externalRegistry.set(
-            io.ktor.plugin.features.DockerImageRegistry.dockerHub(
-                appName = provider { "ktor-app" },
-                username = providers.environmentVariable("DOCKER_HUB_USERNAME"),
-                password = providers.environmentVariable("DOCKER_HUB_PASSWORD")
-            )
-        )
     }
 }

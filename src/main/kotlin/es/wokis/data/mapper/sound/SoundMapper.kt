@@ -47,7 +47,7 @@ fun SoundBO.toDTO() = SoundDTO(
     thumbsUp = thumbsUp,
     thumbsDown = thumbsDown,
     createdOn = createdOn,
-    reactions = reactions.toDTO(),
+    reactions = reactions.toDTO()
 )
 
 @JvmName("reactionBOToDTO")

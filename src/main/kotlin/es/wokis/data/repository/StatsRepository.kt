@@ -15,7 +15,8 @@ class StatsRepositoryImpl(
         val soundsStats = statsLocalDataSource.getSoundsStats()
         val commandsStats = statsLocalDataSource.getCommandsStats()
         val usersStats = statsLocalDataSource.getUsersStats()
-        return listOf(soundsStats, commandsStats, usersStats)
+        val kiwiStats = statsLocalDataSource.getKiwiStats()
+        return listOf(soundsStats, commandsStats, usersStats, kiwiStats)
     }
 
 }

@@ -31,7 +31,7 @@ data class ReactionDTO(
     val addedBy: String
 )
 
-data class SoundRequest(
+data class SoundRequestDTO(
     @SerializedName("title")
     val title: String,
     @SerializedName("sound")
