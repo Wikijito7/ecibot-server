@@ -1,6 +1,7 @@
 package es.wokis.data.dto.sound
 
 import com.google.gson.annotations.SerializedName
+import es.wokis.data.dto.user.UserDTO
 import es.wokis.utils.HashGenerator.generateHashWithSeed
 
 data class SoundDTO(
@@ -15,9 +16,9 @@ data class SoundDTO(
     @SerializedName("createdBy")
     val createdBy: String,
     @SerializedName("thumbsUp")
-    val thumbsUp: Int,
+    val thumbsUp: List<UserDTO>,
     @SerializedName("thumbsDown")
-    val thumbsDown: Int,
+    val thumbsDown: List<UserDTO>,
     @SerializedName("createdOn")
     val createdOn: Long,
     @SerializedName("reactions")
