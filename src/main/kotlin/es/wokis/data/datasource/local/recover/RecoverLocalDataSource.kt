@@ -1,4 +1,4 @@
-package es.wokis.data.datasource.recover
+package es.wokis.data.datasource.local.recover
 
 import com.mongodb.client.MongoCollection
 import es.wokis.data.bo.recover.RecoverBO

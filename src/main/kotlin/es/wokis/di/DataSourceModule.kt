@@ -2,14 +2,14 @@ package es.wokis.di
 
 import com.mongodb.client.MongoCollection
 import es.wokis.data.database.AppDataBase
-import es.wokis.data.datasource.recover.RecoverLocalDataSource
-import es.wokis.data.datasource.recover.RecoverLocalDataSourceImpl
-import es.wokis.data.datasource.stats.StatsLocalDataSource
-import es.wokis.data.datasource.stats.StatsLocalDataSourceImpl
-import es.wokis.data.datasource.user.UserLocalDataSource
-import es.wokis.data.datasource.user.UserLocalDataSourceImpl
-import es.wokis.data.datasource.verify.VerifyLocalDataSource
-import es.wokis.data.datasource.verify.VerifyLocalDataSourceImpl
+import es.wokis.data.datasource.local.recover.RecoverLocalDataSource
+import es.wokis.data.datasource.local.recover.RecoverLocalDataSourceImpl
+import es.wokis.data.datasource.local.stats.StatsLocalDataSource
+import es.wokis.data.datasource.local.stats.StatsLocalDataSourceImpl
+import es.wokis.data.datasource.local.user.UserLocalDataSource
+import es.wokis.data.datasource.local.user.UserLocalDataSourceImpl
+import es.wokis.data.datasource.local.verify.VerifyLocalDataSource
+import es.wokis.data.datasource.local.verify.VerifyLocalDataSourceImpl
 import es.wokis.data.dbo.recover.RecoverDBO
 import es.wokis.data.dbo.stat.FullStatDBO
 import es.wokis.data.dbo.user.UserDBO
