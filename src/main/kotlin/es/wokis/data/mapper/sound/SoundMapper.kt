@@ -6,6 +6,9 @@ import es.wokis.data.dbo.ReactionDBO
 import es.wokis.data.dbo.SoundDBO
 import es.wokis.data.dto.sound.ReactionDTO
 import es.wokis.data.dto.sound.SoundDTO
+import es.wokis.data.mapper.user.toBO
+import es.wokis.data.mapper.user.toDBO
+import es.wokis.data.mapper.user.toDTO
 
 // region dto to bo
 @JvmName("soundDTOToBO")
@@ -17,8 +20,8 @@ fun SoundDTO.toBO() = SoundBO(
     title = title,
     soundUrl = soundUrl,
     createdBy = createdBy,
-    thumbsUp = thumbsUp,
-    thumbsDown = thumbsDown,
+    thumbsUp = thumbsUp.toBO(),
+    thumbsDown = thumbsDown.toBO(),
     createdOn = createdOn,
     reactions = reactions.toBO(),
 )
@@ -44,8 +47,8 @@ fun SoundBO.toDTO() = SoundDTO(
     title = title,
     soundUrl = soundUrl,
     createdBy = createdBy,
-    thumbsUp = thumbsUp,
-    thumbsDown = thumbsDown,
+    thumbsUp = thumbsUp.toDTO(),
+    thumbsDown = thumbsDown.toDTO(),
     createdOn = createdOn,
     reactions = reactions.toDTO()
 )
@@ -71,8 +74,8 @@ fun SoundDBO.toBO() = SoundBO(
     title = title,
     soundUrl = soundUrl,
     createdBy = createdBy,
-    thumbsUp = thumbsUp,
-    thumbsDown = thumbsDown,
+    thumbsUp = thumbsUp.toBO(),
+    thumbsDown = thumbsDown.toBO(),
     createdOn = createdOn,
     reactions = reactions.toBO(),
 )
@@ -98,8 +101,8 @@ fun SoundBO.toDBO() = SoundDBO(
     title = title,
     soundUrl = soundUrl,
     createdBy = createdBy,
-    thumbsUp = thumbsUp,
-    thumbsDown = thumbsDown,
+    thumbsUp = thumbsUp.toDBO(),
+    thumbsDown = thumbsDown.toDBO(),
     createdOn = createdOn,
     reactions = reactions.toDBO(),
 )

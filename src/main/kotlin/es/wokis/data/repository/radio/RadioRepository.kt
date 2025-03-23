@@ -3,12 +3,13 @@ package es.wokis.data.repository.radio
 import es.wokis.data.bo.radio.RadioBO
 import es.wokis.data.datasource.local.radio.RadioLocalDataSource
 import es.wokis.data.datasource.remote.radio.RadioRemoteDataSource
+import es.wokis.data.dto.radio.RadioDTO
 
 interface RadioRepository {
-    fun getAllRadios(): List<RadioBO>
-    fun getRadioByName(radioName: String): RadioBO
-    fun findRadiosByPrompt(prompt: String): List<RadioBO>
-    fun getRadiosByCountry(countryCode: String): List<RadioBO>
+    suspend fun getAllRadios(): List<RadioDTO>
+    suspend fun getRadioByName(radioName: String): RadioBO
+    suspend fun findRadiosByPrompt(prompt: String): List<RadioBO>
+    suspend fun getRadiosByCountry(countryCode: String): List<RadioBO>
 }
 
 class RadioRepositoryImpl(
@@ -16,19 +17,19 @@ class RadioRepositoryImpl(
     private val radioLocalDataSource: RadioLocalDataSource
 ) : RadioRepository {
 
-    override fun getAllRadios(): List<RadioBO> {
+    override suspend fun getAllRadios(): List<RadioDTO> {
+        return radioRemoteDataSource.fetchAllRadios()
+    }
+
+    override suspend fun getRadioByName(radioName: String): RadioBO {
         TODO("Not yet implemented")
     }
 
-    override fun getRadioByName(radioName: String): RadioBO {
+    override suspend fun findRadiosByPrompt(prompt: String): List<RadioBO> {
         TODO("Not yet implemented")
     }
 
-    override fun findRadiosByPrompt(prompt: String): List<RadioBO> {
-        TODO("Not yet implemented")
-    }
-
-    override fun getRadiosByCountry(countryCode: String): List<RadioBO> {
+    override suspend fun getRadiosByCountry(countryCode: String): List<RadioBO> {
         TODO("Not yet implemented")
     }
 }

@@ -24,6 +24,11 @@ fun RegisterDTO.toLoginDTO() = LoginDTO(
     password = password
 )
 
+@JvmName("userDTOToBO")
+fun List<UserDTO>.toBO() = this.map {
+    it.toBO()
+}
+
 fun UserDTO.toBO() = UserBO(
     id = id,
     username = username,
@@ -34,6 +39,9 @@ fun UserDTO.toBO() = UserBO(
     createdOn = createdOn,
     emailVerified = emailVerified
 )
+
+@JvmName("UserBOToDBO")
+fun List<UserBO>.toDBO() = this.map { it.toDBO() }
 
 fun UserBO.toDBO() = UserDBO(
     id = id?.let { ObjectId(it).toId() },
@@ -48,6 +56,9 @@ fun UserBO.toDBO() = UserDBO(
     emailVerified = emailVerified,
     recoverWords = recoverWords
 )
+
+@JvmName("userDBOToBO")
+fun List<UserDBO>.toBO() = this.map { it.toBO() }
 
 fun UserDBO.toBO() = UserBO(
     id = id.toString(),
