@@ -74,6 +74,10 @@ ktor {
     }
 }
 
+tasks.shadowJar {
+    dependsOn.addAll(listOf("compileJava", "compileKotlin", "processResources", "distTar", "distZip"))
+}
+
 tasks.test {
     useJUnitPlatform()
     finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
