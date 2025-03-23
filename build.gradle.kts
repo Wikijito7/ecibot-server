@@ -1,7 +1,10 @@
 plugins {
     application
-    kotlin("jvm") version "2.1.20"
-    id("io.ktor.plugin") version "3.1.1"
+    alias(libs.plugins.kotlin.jvm)
+    jacoco
+    alias(libs.plugins.sonarqube)
+    alias(libs.plugins.plugin.serialization)
+    alias(libs.plugins.ktor.plugin)
 }
 
 group = "es.wokis"
@@ -68,5 +71,48 @@ dependencies {
 ktor {
     fatJar {
         archiveFileName.set("${rootProject.name}-${rootProject.version}.jar")
+    }
+}
+
+tasks.shadowJar {
+    dependsOn.addAll(listOf("compileJava", "compileKotlin", "processResources", "distTar", "distZip"))
+}
+
+tasks.test {
+    useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
+}
+
+jacoco {
+    toolVersion = libs.versions.jacoco.get()
+    reportsDirectory = layout.buildDirectory.dir("customJacocoReportDir")
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // tests are required to run before generating the report
+    reports {
+        xml.required = true
+        xml.outputLocation.set(file("build/reports/jacoco/test-results/jacocoTestReport.xml"))
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
+    }
+}
+
+sonar {
+    properties {
+        val projectKey = System.getenv("SONAR_PROJECT_KEY")
+        val organization = System.getenv("SONAR_ORGANIZATION")
+        val exclusions = listOf(
+            "**/*BO.kt",
+            "**/*DTO.kt",
+            "**/*Exception.kt",
+            "src/main/kotlin/es/wokis/Application.kt",
+            "*.kts",
+            "**/di/*.kt",
+        )
+        property("sonar.projectKey", projectKey)
+        property("sonar.organization", organization)
+        property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.coverage.exclusions", exclusions)
     }
 }
