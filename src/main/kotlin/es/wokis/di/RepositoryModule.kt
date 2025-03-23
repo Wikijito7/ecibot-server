@@ -12,7 +12,6 @@ import es.wokis.data.repository.user.UserRepository
 import es.wokis.data.repository.user.UserRepositoryImpl
 import es.wokis.data.repository.verify.VerifyRepository
 import es.wokis.data.repository.verify.VerifyRepositoryImpl
-import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val repositoryModule = module {

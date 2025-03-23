@@ -1,6 +1,6 @@
 package es.wokis.data.datasource.local.verify
 
-import com.mongodb.client.MongoCollection
+import com.mongodb.kotlin.client.coroutine.MongoCollection
 import es.wokis.data.bo.verification.VerificationBO
 import es.wokis.data.dbo.verification.VerificationDBO
 import es.wokis.data.mapper.verify.toBO

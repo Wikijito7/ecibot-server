@@ -1,12 +1,13 @@
 package es.wokis.data.datasource.local.stats
 
-import com.mongodb.client.MongoCollection
+import com.mongodb.kotlin.client.coroutine.MongoCollection
 import es.wokis.data.bo.StatBO
 import es.wokis.data.bo.StatsBO
 import es.wokis.data.bo.StatsType
 import es.wokis.data.dbo.stat.FullStatDBO
 import es.wokis.utils.isTrue
 import es.wokis.utils.takeAtMost
+import kotlinx.coroutines.flow.toList
 
 interface StatsLocalDataSource {
     suspend fun getSoundsStats(): StatsBO
@@ -25,6 +26,7 @@ class StatsLocalDataSourceImpl(
     override suspend fun getSoundsStats(): StatsBO =
         statsCollection
             .find()
+            .toList()
             .asSequence()
             .filter { it.commandName.lowercase() != KIWI }
             .filter { it.soundName?.isNotEmpty().isTrue() }
@@ -42,6 +44,7 @@ class StatsLocalDataSourceImpl(
     override suspend fun getCommandsStats(): StatsBO =
         statsCollection
             .find()
+            .toList()
             .asSequence()
             .filter { it.commandName.lowercase() != KIWI }
             .filter { it.commandName.isNotEmpty() }
@@ -59,6 +62,7 @@ class StatsLocalDataSourceImpl(
     override suspend fun getUsersStats(): StatsBO =
         statsCollection
             .find()
+            .toList()
             .asSequence()
             .filter { it.commandName.lowercase() != KIWI }
             .filter { it.username.isNotEmpty() }
@@ -76,6 +80,7 @@ class StatsLocalDataSourceImpl(
     override suspend fun getKiwiStats(): StatsBO =
         statsCollection
             .find()
+            .toList()
             .filter { it.username == KIWI && it.soundName?.isNotEmpty().isTrue() }
             .groupBy { it.soundName }
             .map {

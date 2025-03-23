@@ -1,11 +1,12 @@
 package es.wokis.data.dbo.recover
 
-import org.bson.codecs.pojo.annotations.BsonId
-import org.litote.kmongo.Id
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
+import org.bson.types.ObjectId
 
 data class RecoverDBO(
-    @BsonId
-    val id: Id<RecoverDBO>? = null,
+    @SerialName("_id")
+    @Contextual val id: ObjectId? = null,
     val email: String,
     val recoverToken: String,
     val timeStamp: Long,

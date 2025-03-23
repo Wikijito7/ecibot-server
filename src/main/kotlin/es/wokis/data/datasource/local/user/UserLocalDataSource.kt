@@ -1,14 +1,13 @@
 package es.wokis.data.datasource.local.user
 
-import com.mongodb.client.MongoCollection
+import com.mongodb.kotlin.client.coroutine.MongoCollection
 import es.wokis.data.bo.user.UserBO
 import es.wokis.data.constants.ServerConstants.EMPTY_TEXT
 import es.wokis.data.dbo.user.UserDBO
 import es.wokis.data.mapper.user.toBO
 import es.wokis.data.mapper.user.toDBO
+import kotlinx.coroutines.flow.toList
 import org.bson.types.ObjectId
-import org.litote.kmongo.*
-import org.litote.kmongo.id.toId
 import java.util.regex.Pattern
 
 interface UserLocalDataSource {
@@ -26,7 +25,7 @@ class UserLocalDataSourceImpl(private val userCollection: MongoCollection<UserDB
         Pattern.compile("\\b$it\\b", Pattern.CASE_INSENSITIVE)
     }
 
-    override suspend fun getAllUsers(): List<UserBO> = userCollection.find().map {
+    override suspend fun getAllUsers(): List<UserBO> = userCollection.find().toList().map {
         it.toBO()
     }.toList()
 

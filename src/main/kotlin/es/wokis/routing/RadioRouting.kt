@@ -7,7 +7,7 @@ import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
 
 fun Routing.setUpRadioRouting() {
-    val radioRepository: RadioRepository by inject()
+    val radioRepository by inject<RadioRepository>()
 
     get("/radio") {
         val radios = radioRepository.getAllRadios()
