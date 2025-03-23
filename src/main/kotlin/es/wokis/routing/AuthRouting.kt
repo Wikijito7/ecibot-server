@@ -16,7 +16,6 @@ import es.wokis.services.*
 import es.wokis.utils.isEmail
 import es.wokis.utils.user
 import io.ktor.http.*
-import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.plugins.ratelimit.*
 import io.ktor.server.request.*

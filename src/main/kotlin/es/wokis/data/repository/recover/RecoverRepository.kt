@@ -2,7 +2,7 @@ package es.wokis.data.repository.recover
 
 import es.wokis.data.bo.recover.RecoverBO
 import es.wokis.data.bo.response.AcknowledgeBO
-import es.wokis.data.datasource.recover.RecoverLocalDataSource
+import es.wokis.data.datasource.local.recover.RecoverLocalDataSource
 import es.wokis.data.dto.user.auth.ChangePassRequestDTO
 import es.wokis.data.exception.RecoverCodeNotFoundException
 import es.wokis.data.exception.UserNotFoundException

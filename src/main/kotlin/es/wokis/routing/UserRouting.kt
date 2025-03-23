@@ -11,10 +11,10 @@ import es.wokis.routing.utils.verified
 import es.wokis.services.ImageService
 import es.wokis.services.TOTPService
 import es.wokis.services.withAuthenticator
+import es.wokis.utils.getAllParts
 import es.wokis.utils.user
 import io.ktor.http.*
 import io.ktor.http.content.*
-import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -79,7 +79,8 @@ fun Routing.setUpUserRouting() {
                     callUser?.let { user ->
                         withAuthenticator(user) {
                             verified(user) {
-                                val image: PartData.FileItem = multipartData.readAllParts()
+                                val image: PartData.FileItem = multipartData
+                                    .getAllParts()
                                     .find { part ->
                                         part is PartData.FileItem
                                     }?.takeIf { part ->

@@ -1,4 +1,4 @@
-package es.wokis.data.datasource.user
+package es.wokis.data.datasource.local.user
 
 import com.mongodb.client.MongoCollection
 import es.wokis.data.bo.user.UserBO

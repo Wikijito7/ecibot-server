@@ -2,7 +2,7 @@ package es.wokis.data.repository.verify
 
 import es.wokis.data.bo.response.AcknowledgeBO
 import es.wokis.data.bo.verification.VerificationBO
-import es.wokis.data.datasource.verify.VerifyLocalDataSource
+import es.wokis.data.datasource.local.verify.VerifyLocalDataSource
 import es.wokis.data.exception.VerificationNotFoundException
 import es.wokis.data.repository.user.UserRepository
 

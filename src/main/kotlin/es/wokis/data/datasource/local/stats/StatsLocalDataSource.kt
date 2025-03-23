@@ -1,11 +1,10 @@
-package es.wokis.data.datasource.stats
+package es.wokis.data.datasource.local.stats
 
 import com.mongodb.client.MongoCollection
 import es.wokis.data.bo.StatBO
 import es.wokis.data.bo.StatsBO
 import es.wokis.data.bo.StatsType
 import es.wokis.data.dbo.stat.FullStatDBO
-import es.wokis.utils.isFalse
 import es.wokis.utils.isTrue
 import es.wokis.utils.takeAtMost
 

@@ -1,4 +1,4 @@
-package es.wokis.data.datasource.verify
+package es.wokis.data.datasource.local.verify
 
 import com.mongodb.client.MongoCollection
 import es.wokis.data.bo.verification.VerificationBO

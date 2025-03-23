@@ -3,7 +3,7 @@ package es.wokis.data.repository.user
 import es.wokis.data.bo.response.AcknowledgeBO
 import es.wokis.data.bo.user.UpdateUserBO
 import es.wokis.data.bo.user.UserBO
-import es.wokis.data.datasource.user.UserLocalDataSource
+import es.wokis.data.datasource.local.user.UserLocalDataSource
 import es.wokis.data.dto.user.auth.ChangePassRequestDTO
 import es.wokis.data.dto.user.auth.LoginDTO
 import es.wokis.data.dto.user.auth.RegisterDTO

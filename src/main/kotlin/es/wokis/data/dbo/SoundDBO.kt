@@ -1,5 +1,6 @@
 package es.wokis.data.dbo
 
+import es.wokis.data.dbo.user.UserDBO
 import org.bson.codecs.pojo.annotations.BsonId
 
 data class SoundDBO(
@@ -9,8 +10,8 @@ data class SoundDBO(
     val title: String,
     val soundUrl: String,
     val createdBy: String,
-    val thumbsUp: Int,
-    val thumbsDown: Int,
+    val thumbsUp: List<UserDBO>,
+    val thumbsDown: List<UserDBO>,
     val createdOn: Long,
     val reactions: List<ReactionDBO> = emptyList()
 )
