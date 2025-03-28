@@ -1,16 +1,20 @@
 package es.wokis.data.dto.radio
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonIgnoreUnknownKeys
 
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
+@JsonIgnoreUnknownKeys
 data class RadioDTO(
-    @SerialName("radioName")
+    @SerialName("name")
     val radioName: String,
     @SerialName("url")
     val url: String,
-    @SerialName("thumbnailUrl")
+    @SerialName("favicon")
     val thumbnailUrl: String,
-    @SerialName("countryCode")
+    @SerialName("countrycode")
     val countryCode: String
 )

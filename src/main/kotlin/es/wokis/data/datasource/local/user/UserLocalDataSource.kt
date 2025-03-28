@@ -1,11 +1,14 @@
 package es.wokis.data.datasource.local.user
 
+import com.mongodb.client.model.Filters
+import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import es.wokis.data.bo.user.UserBO
 import es.wokis.data.constants.ServerConstants.EMPTY_TEXT
 import es.wokis.data.dbo.user.UserDBO
 import es.wokis.data.mapper.user.toBO
 import es.wokis.data.mapper.user.toDBO
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 import org.bson.types.ObjectId
 import java.util.regex.Pattern
@@ -30,23 +33,27 @@ class UserLocalDataSourceImpl(private val userCollection: MongoCollection<UserDB
     }.toList()
 
     override suspend fun getUserById(id: String): UserBO? {
-        val bsonId: Id<UserDBO> = ObjectId(id).toId()
-        return userCollection.findOne(UserDBO::id eq bsonId)?.toBO()
+        val filter = Filters.eq(UserDBO::id.name, ObjectId(id))
+        return userCollection.find(filter).firstOrNull()?.toBO()
     }
 
-    override suspend fun getUserByEmail(email: String): UserBO? =
-        userCollection.findOne(UserDBO::email.regex(email))?.toBO()
+    override suspend fun getUserByEmail(email: String): UserBO? {
+        val filter = Filters.regex(UserDBO::email.name, email)
+        return userCollection.find(filter).firstOrNull()?.toBO()
+    }
 
-    override suspend fun getUserByUsername(username: String): UserBO? =
-        userCollection.findOne(UserDBO::username.regex(getUsernameCaseInsensitive(username)))?.toBO()
+    override suspend fun getUserByUsername(username: String): UserBO? {
+        val filter = Filters.regex(UserDBO::username.name, getUsernameCaseInsensitive(username))
+        return userCollection.find(filter).firstOrNull()?.toBO()
+    }
 
     override suspend fun getUserByUsernameOrEmail(username: String, email: String): UserBO? =
-        userCollection.findOne(
-            or(
-                UserDBO::username.regex(getUsernameCaseInsensitive(username)),
-                UserDBO::email.regex(email.takeIf { it.isNotBlank() } ?: username)
+        userCollection.find(
+            Filters.or(
+                Filters.regex(UserDBO::username.name, getUsernameCaseInsensitive(username)),
+                Filters.regex(UserDBO::email.name, email.takeIf { it.isNotBlank() } ?: username)
             )
-        )?.toBO()
+        ).firstOrNull()?.toBO()
 
     override suspend fun createUser(user: UserBO): Boolean {
         return try {
@@ -59,7 +66,7 @@ class UserLocalDataSourceImpl(private val userCollection: MongoCollection<UserDB
     }
 
     override suspend fun updateUser(user: UserBO): Boolean {
-        val bsonId: Id<UserDBO> = ObjectId(user.id).toId()
-        return userCollection.updateOne(UserDBO::id eq bsonId, user.toDBO()).wasAcknowledged()
+        val filter = Filters.eq(UserDBO::id.name, ObjectId(user.id))
+        return userCollection.replaceOne(filter, user.toDBO()).wasAcknowledged()
     }
 }

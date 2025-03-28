@@ -31,9 +31,9 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import kotlin.text.Charsets
 
-private const val SOCKET_TIMEOUT_MILLIS = 20000L
-private const val CONNECT_TIMEOUT_MILLIS = 20000L
-private const val REQUEST_TIMEOUT_MILLIS = 20000L
+private const val SOCKET_TIMEOUT_MILLIS = 40000L
+private const val CONNECT_TIMEOUT_MILLIS = 40000L
+private const val REQUEST_TIMEOUT_MILLIS = 40000L
 
 val localDataSourceModule = module {
     single { AppDataBase() }

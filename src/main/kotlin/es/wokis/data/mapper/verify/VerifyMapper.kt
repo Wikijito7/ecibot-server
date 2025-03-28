@@ -3,11 +3,10 @@ package es.wokis.data.mapper.verify
 import es.wokis.data.bo.verification.VerificationBO
 import es.wokis.data.dbo.verification.VerificationDBO
 import org.bson.types.ObjectId
-import org.litote.kmongo.id.toId
 import java.util.*
 
 fun VerificationBO.toDBO() = VerificationDBO(
-    id = id?.let { ObjectId(it).toId() },
+    id = id?.let { ObjectId(it) },
     email = email,
     verificationToken = verificationToken,
     timeStamp = timeStamp.time,

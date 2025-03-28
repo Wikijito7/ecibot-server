@@ -1,16 +1,13 @@
 package es.wokis.data.datasource.local.verify
 
+import com.mongodb.client.model.Filters
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import es.wokis.data.bo.verification.VerificationBO
 import es.wokis.data.dbo.verification.VerificationDBO
 import es.wokis.data.mapper.verify.toBO
 import es.wokis.data.mapper.verify.toDBO
+import kotlinx.coroutines.flow.firstOrNull
 import org.bson.types.ObjectId
-import org.litote.kmongo.Id
-import org.litote.kmongo.eq
-import org.litote.kmongo.findOne
-import org.litote.kmongo.id.toId
-import org.litote.kmongo.regex
 
 interface VerifyLocalDataSource {
     suspend fun getVerificationByToken(token: String): VerificationBO?
@@ -21,7 +18,7 @@ interface VerifyLocalDataSource {
 class VerifyLocalDataSourceImpl(private val verificationCollection: MongoCollection<VerificationDBO>) :
     VerifyLocalDataSource {
     override suspend fun getVerificationByToken(token: String): VerificationBO? =
-        verificationCollection.findOne(VerificationDBO::verificationToken.regex(token))?.toBO()
+        verificationCollection.find(Filters.regex(VerificationDBO::verificationToken.name, token)).firstOrNull()?.toBO()
 
     override suspend fun addVerification(verification: VerificationBO): Boolean {
         return try {
@@ -34,12 +31,10 @@ class VerifyLocalDataSourceImpl(private val verificationCollection: MongoCollect
     }
 
     override suspend fun removeVerification(id: String): Boolean = try {
-        val bsonId: Id<VerificationDBO> = ObjectId(id).toId()
-        verificationCollection.deleteOne(VerificationDBO::id eq bsonId).wasAcknowledged()
+        verificationCollection.deleteOne(Filters.eq(VerificationDBO::id.name, ObjectId(id))).wasAcknowledged()
 
     } catch (e: Throwable) {
         println(e.stackTraceToString())
         false
     }
-
 }
