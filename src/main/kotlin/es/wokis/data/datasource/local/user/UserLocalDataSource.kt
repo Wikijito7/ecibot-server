@@ -1,7 +1,6 @@
 package es.wokis.data.datasource.local.user
 
 import com.mongodb.client.model.Filters
-import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import es.wokis.data.bo.user.UserBO
 import es.wokis.data.constants.ServerConstants.EMPTY_TEXT

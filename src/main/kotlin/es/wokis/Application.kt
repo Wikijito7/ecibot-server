@@ -35,4 +35,5 @@ fun Application.module() {
     configureSecurity()
     configureRateLimit()
     configureRouting()
+    configureTasks()
 }

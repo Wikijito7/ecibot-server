@@ -4,7 +4,7 @@ import org.bson.codecs.pojo.annotations.BsonId
 
 data class RadioDBO(
     @BsonId
-    val id: String,
+    val id: String? = null,
     val radioName: String,
     val url: String,
     val thumbnailUrl: String,
