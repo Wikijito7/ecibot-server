@@ -16,7 +16,7 @@ private const val RADIO_OUTDATED_DELAY: Long = 24 * 60 * 60 * 1000L
 
 interface RadioRepository {
     suspend fun getAllRadios(): List<RadioDTO>
-    suspend fun getRadioByName(radioName: String): RadioBO
+    suspend fun getRadioByName(radioName: String): RadioBO?
     suspend fun findRadiosByPrompt(prompt: String): List<RadioBO>
     suspend fun getRadiosByCountry(countryCode: String): List<RadioBO>
     suspend fun fetchAndSaveRemoteRadios()
@@ -30,13 +30,11 @@ class RadioRepositoryImpl(
     override suspend fun getAllRadios(): List<RadioDTO> =
         radioLocalDataSource.getAllRadios().toBO().toDTO()
 
-    override suspend fun getRadioByName(radioName: String): RadioBO {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getRadioByName(radioName: String): RadioBO? =
+        radioLocalDataSource.getRadioByName(radioName)?.toBO()
 
-    override suspend fun findRadiosByPrompt(prompt: String): List<RadioBO> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun findRadiosByPrompt(prompt: String): List<RadioBO> =
+        radioLocalDataSource.findRadiosByName(prompt).toBO()
 
     override suspend fun getRadiosByCountry(countryCode: String): List<RadioBO> {
         TODO("Not yet implemented")
