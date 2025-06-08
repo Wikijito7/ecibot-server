@@ -1,12 +1,15 @@
 package es.wokis.data.datasource.local.radio
 
+import com.mongodb.client.model.Aggregates
 import com.mongodb.client.model.Filters
+import com.mongodb.client.model.Projections
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import es.wokis.data.dbo.radio.RadioCollectionDBO
 import es.wokis.data.dbo.radio.RadioDBO
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
+import java.util.regex.Pattern
 
 interface RadioLocalDataSource {
     suspend fun areRadiosOutdated(): Boolean
@@ -34,7 +37,7 @@ class RadioLocalDataSourceImpl(
             radioCollection.insertOne(RadioCollectionDBO(radios = radios, timestamp = outdatedTimeStamp))
         } else {
             radioCollection.find().first().copy(radios = radios, timestamp = outdatedTimeStamp).let {
-                val filter = Filters.eq(RadioCollectionDBO::id.name, it.id)
+                val filter = Filters.eq("_${RadioCollectionDBO::id.name}", it.id)
                 radioCollection.replaceOne(filter, it)
             }
         }
@@ -51,15 +54,33 @@ class RadioLocalDataSourceImpl(
 
     override suspend fun areThereAnyRadioInserted(): Boolean = radioCollection.countDocuments() > 0L
 
-    override suspend fun getRadioByName(radioName: String): RadioDBO? {
-        val filter = Filters.eq(RadioDBO::radioName.name, radioName)
-        return radioCollection.find<RadioDBO>(filter = filter).firstOrNull()
-    }
+    override suspend fun getRadioByName(radioName: String): RadioDBO? = radioCollection
+        .find<RadioCollectionDBO>()
+        .projection(
+            Projections.elemMatch(
+                /* fieldName = */ RadioCollectionDBO::radios.name,
+                /* filter = */ Filters.eq(RadioDBO::radioName.name, radioName)
+            )
+        )
+        .firstOrNull()
+        ?.radios
+        ?.firstOrNull()
 
-    override suspend fun findRadiosByName(prompt: String): List<RadioDBO> {
-        val filter = Filters.eq(RadioDBO::radioName.name, prompt)
-        return radioCollection.find<RadioDBO>(filter = filter).limit(MAX_DOCUMENTS_LIMIT).toList()
-    }
+    override suspend fun findRadiosByName(prompt: String): List<RadioDBO> = radioCollection
+        .aggregate<RadioDBO>(
+            listOf(
+                Aggregates.unwind("\$${RadioCollectionDBO::radios.name}"),
+                Aggregates.match(
+                    Filters.regex(
+                        /* fieldName = */ "${RadioCollectionDBO::radios.name}.${RadioDBO::radioName.name}",
+                        /* pattern = */ Pattern.compile(".*${Regex.escape(prompt)}.*", Pattern.CASE_INSENSITIVE)
+                    )
+                ),
+                Aggregates.limit(MAX_DOCUMENTS_LIMIT),
+                Aggregates.replaceRoot("\$${RadioCollectionDBO::radios.name}"),
+            )
+        )
+        .toList()
 
     override suspend fun getNumberOfPagesAvailable(): Int =
         (radioCollection.find().firstOrNull()?.radios?.size ?: 0) / PAGINATION_MAX_DOCUMENTS_LIMIT

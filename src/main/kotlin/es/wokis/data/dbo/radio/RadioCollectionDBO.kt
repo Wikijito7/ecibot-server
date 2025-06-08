@@ -8,7 +8,7 @@ data class RadioCollectionDBO(
     @BsonId
     val id: ObjectId? = null,
     @BsonProperty("radios")
-    val radios: List<RadioDBO>,
+    val radios: List<RadioDBO>?,
     @BsonProperty("timestamp")
-    val timestamp: Long
+    val timestamp: Long?
 )
