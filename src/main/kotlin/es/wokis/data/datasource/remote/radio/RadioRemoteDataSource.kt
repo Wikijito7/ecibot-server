@@ -10,7 +10,7 @@ interface RadioRemoteDataSource {
     suspend fun fetchAllRadios(): List<RadioDTO>
 }
 
-private const val RADIO_BROWSER_ALL_RADIOS = /*"http://all.api.radio-browser.info/json/stations"*/ "https://wokis.es/radios/radios.json"
+private const val RADIO_BROWSER_ALL_RADIOS = "http://all.api.radio-browser.info/json/stations"
 
 class RadioRemoteDataSourceImpl(
     private val httpClient: HttpClient

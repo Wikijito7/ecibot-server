@@ -1,6 +1,7 @@
 package es.wokis.data.repository.radio
 
 import es.wokis.data.bo.radio.RadioBO
+import es.wokis.data.bo.radio.RadioPageBO
 import es.wokis.data.datasource.local.radio.RadioLocalDataSource
 import es.wokis.data.datasource.remote.radio.RadioRemoteDataSource
 import es.wokis.data.dto.radio.RadioDTO
@@ -19,6 +20,7 @@ interface RadioRepository {
     suspend fun getRadioByName(radioName: String): RadioBO?
     suspend fun findRadiosByPrompt(prompt: String): List<RadioBO>
     suspend fun getRadiosByCountry(countryCode: String): List<RadioBO>
+    suspend fun getRadioPaginated(page: Int): RadioPageBO
     suspend fun fetchAndSaveRemoteRadios()
 }
 
@@ -40,12 +42,26 @@ class RadioRepositoryImpl(
         TODO("Not yet implemented")
     }
 
+    override suspend fun getRadioPaginated(page: Int): RadioPageBO =
+        radioLocalDataSource.getAllRadiosPaginated(page).toBO()
+
     override suspend fun fetchAndSaveRemoteRadios() {
         if (radioLocalDataSource.areRadiosOutdated().not()) {
             return
         }
-        radioRemoteDataSource.fetchAllRadios().toBO().toDBO().let {
-            radioLocalDataSource.saveRadios(it, System.currentTimeMillis() + RADIO_OUTDATED_DELAY)
-        }
+        radioRemoteDataSource.fetchAllRadios()
+            .toBO()
+            .asSequence()
+            .map {
+                it.copy(radioName = it.radioName.trim().replace(Regex("[\\t\\n\"\'`]"), ""))
+            }.filter {
+                it.radioName.isNotBlank()
+            }
+            .sortedBy { it.radioName }
+            .toList()
+            .toDBO()
+            .let {
+                radioLocalDataSource.saveRadios(it, System.currentTimeMillis() + RADIO_OUTDATED_DELAY)
+            }
     }
 }

@@ -17,6 +17,17 @@ fun Routing.setUpRadioRouting() {
             call.respond(HttpStatusCode.OK, radios)
         }
 
+        get("/page/{page}") {
+            val page = call.parameters["page"]?.toIntOrNull()?.coerceAtLeast(1)
+
+            page?.let {
+                val radioPage = radioRepository.getRadioPaginated(page).takeIf { it.radios.isNotEmpty() }?.toDTO()
+                radioPage?.let {
+                    call.respond(HttpStatusCode.OK, radioPage)
+                } ?: call.respond(HttpStatusCode.NotFound, "Page not found")
+            } ?: call.respond(HttpStatusCode.BadRequest, "Page as a number is required")
+        }
+
         get("/{name}") {
             val name = call.parameters["name"]
 
