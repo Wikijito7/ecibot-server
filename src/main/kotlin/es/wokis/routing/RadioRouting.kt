@@ -28,15 +28,21 @@ fun Routing.setUpRadioRouting() {
             } ?: call.respond(HttpStatusCode.BadRequest, "Page as a number is required")
         }
 
-        get("/{name}") {
-            val name = call.parameters["name"]
+        route("/{name}") {
+            get {
+                val name = call.parameters["name"]
 
-            name?.let {
-                val radio = radioRepository.getRadioByName(name)?.toDTO()
-                radio?.let {
-                    call.respond(HttpStatusCode.OK, radio)
-                } ?: call.respond(HttpStatusCode.NotFound, "No radio found")
-            } ?: call.respond(HttpStatusCode.BadRequest, "Name is required")
+                name?.let {
+                    val radio = radioRepository.getRadioByName(name)?.toDTO()
+                    radio?.let {
+                        call.respond(HttpStatusCode.OK, radio)
+                    } ?: call.respond(HttpStatusCode.NotFound, "No radio found")
+                } ?: call.respond(HttpStatusCode.BadRequest, "Name is required")
+            }
+
+            get("/page/{page}") {
+
+            }
         }
 
         route("/find/{name}") {
@@ -49,6 +55,10 @@ fun Routing.setUpRadioRouting() {
                         call.respond(HttpStatusCode.OK, radios)
                     } ?: call.respond(HttpStatusCode.NotFound, "No radio found")
                 } ?: call.respond(HttpStatusCode.BadRequest, "Name is required")
+            }
+
+            get("/page/{page}") {
+
             }
         }
     }
