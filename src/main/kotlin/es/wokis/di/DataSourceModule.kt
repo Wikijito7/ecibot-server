@@ -73,6 +73,7 @@ val remoteDataSourceModule = module {
             expectSuccess = true
         }
     }
+
     single<RadioRemoteDataSource> {
         RadioRemoteDataSourceImpl(
             httpClient = get()

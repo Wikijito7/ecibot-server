@@ -6,7 +6,7 @@ import io.ktor.server.application.log
 import kotlinx.coroutines.delay
 import org.koin.ktor.ext.inject
 
-private const val RADIO_AUTO_FETCH_TIMEOUT = 24 * 60 * 60 + 10 * 1000L
+private const val RADIO_AUTO_FETCH_TIMEOUT = 24 * 60 * 60 * 1000L + 10000
 
 suspend fun Application.registerPeriodicStationRequest() {
     val radioRepository by inject<RadioRepository>()

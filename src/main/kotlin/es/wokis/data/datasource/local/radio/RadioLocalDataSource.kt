@@ -1,7 +1,6 @@
 package es.wokis.data.datasource.local.radio
 
 import com.mongodb.client.model.Aggregates
-import com.mongodb.client.model.Aggregates.project
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Projections
 import com.mongodb.client.model.Projections.computed
@@ -11,7 +10,6 @@ import es.wokis.data.dbo.radio.*
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
-import org.bson.Document
 import org.bson.conversions.Bson
 import java.util.regex.Pattern
 
@@ -23,7 +21,12 @@ interface RadioLocalDataSource {
     suspend fun areThereAnyRadioInserted(): Boolean
     suspend fun getRadioByName(radioName: String): RadioDBO?
     suspend fun findRadiosByName(prompt: String): List<RadioDBO>
-    suspend fun getNumberOfPagesAvailable(): Int
+    suspend fun findRadiosByPromptPaginated(prompt: String, page: Int): RadioPageDBO
+    suspend fun getNumberOfStationPagesAvailable(name: String = ""): Int
+    suspend fun findRadiosByCountryCode(countryCode: String): List<RadioDBO>
+    suspend fun findRadiosByCountryCodePaginated(countryCode: String): List<RadioDBO>
+    suspend fun getCountryCodes(countryCode: String): List<CountryCodeDBO>
+
 }
 
 private const val MAX_DOCUMENTS_LIMIT = 30
@@ -34,7 +37,7 @@ class RadioLocalDataSourceImpl(
 ) : RadioLocalDataSource {
 
     override suspend fun areRadiosOutdated(): Boolean {
-        val projection: Bson = project(
+        val projection: Bson = Aggregates.project(
             include(RadioCollectionDBO::timestamp.name)
         )
         val timestamp = radioCollection
@@ -66,7 +69,7 @@ class RadioLocalDataSourceImpl(
     ).let {
         RadioPageDBO(
             currentPage = page,
-            maxPage = getNumberOfPagesAvailable(),
+            maxPage = getNumberOfStationPagesAvailable(),
             radios = it
         )
     }
@@ -87,6 +90,18 @@ class RadioLocalDataSourceImpl(
 
     override suspend fun findRadiosByName(prompt: String): List<RadioDBO> = findRadios(prompt)
 
+    override suspend fun findRadiosByPromptPaginated(prompt: String, page: Int): RadioPageDBO = findRadios(
+        prompt = prompt,
+        batchSize = PAGINATION_MAX_DOCUMENTS_LIMIT,
+        skip = PAGINATION_MAX_DOCUMENTS_LIMIT * (page - 1)
+    ).let {
+        RadioPageDBO(
+            currentPage = page,
+            maxPage = getNumberOfStationPagesAvailable(prompt),
+            radios = it
+        )
+    }
+
     private suspend fun findRadios(prompt: String, batchSize: Int = MAX_DOCUMENTS_LIMIT, skip: Int = 0) = radioCollection
             .aggregate<RadioDBO>(
                 listOf(
@@ -97,24 +112,55 @@ class RadioLocalDataSourceImpl(
                             /* pattern = */ Pattern.compile(".*${Regex.escape(prompt)}.*", Pattern.CASE_INSENSITIVE)
                         )
                     ),
-                    Aggregates.limit(batchSize),
                     Aggregates.skip(skip),
+                    Aggregates.limit(batchSize),
                     Aggregates.replaceRoot("\$${RadioCollectionDBO::radios.name}"),
                 )
             )
             .toList()
 
-    override suspend fun getNumberOfPagesAvailable(): Int {
-        val projection: Bson = project(
-            computed("radiosCount", Document("\$size", "\$radios"))
-        )
+    override suspend fun getNumberOfStationPagesAvailable(name: String): Int {
         val count = radioCollection
-            .aggregate<RadiosCountDBO>(listOf(projection))
+            .aggregate<RadiosCountDBO>(
+                listOf(
+                    Aggregates.unwind("\$${RadioCollectionDBO::radios.name}"),
+                    Aggregates.match(
+                        Filters.regex(
+                            /* fieldName = */ "${RadioCollectionDBO::radios.name}.${RadioDBO::radioName.name}",
+                            /* pattern = */ Pattern.compile(".*${Regex.escape(name)}.*", Pattern.CASE_INSENSITIVE)
+                        )
+                    ),
+                    Aggregates.count(RadioDBO::radioName.name),
+                    Aggregates.project(
+                        computed(RadiosCountDBO::radiosCount.name, "\$${RadioDBO::radioName.name}")
+                    )
+                )
+            )
             .toList()
             .firstOrNull()
             ?.radiosCount
             ?: 0
 
-        return count / PAGINATION_MAX_DOCUMENTS_LIMIT
+        return (count / PAGINATION_MAX_DOCUMENTS_LIMIT) + 1
     }
+
+    override suspend fun findRadiosByCountryCode(countryCode: String): List<RadioDBO> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun findRadiosByCountryCodePaginated(countryCode: String): List<RadioDBO> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getCountryCodes(countryCode: String): List<CountryCodeDBO> = radioCollection
+        .aggregate<CountryCodeDBO>(
+            listOf(
+                Aggregates.unwind("\$${RadioCollectionDBO::radios.name}"),
+                Aggregates.count(RadioDBO::countryCode.name),
+                Aggregates.project(
+                    computed(CountryCodeDBO::countryCodes.name, "\$${RadioDBO::countryCode.name}")
+                )
+            )
+        )
+        .toList()
 }

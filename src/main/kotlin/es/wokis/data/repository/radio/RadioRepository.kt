@@ -4,6 +4,7 @@ import es.wokis.data.bo.radio.RadioBO
 import es.wokis.data.bo.radio.RadioPageBO
 import es.wokis.data.datasource.local.radio.RadioLocalDataSource
 import es.wokis.data.datasource.remote.radio.RadioRemoteDataSource
+import es.wokis.data.dbo.radio.RadioPageDBO
 import es.wokis.data.dto.radio.RadioDTO
 import es.wokis.data.mapper.radio.toBO
 import es.wokis.data.mapper.radio.toDBO
@@ -19,6 +20,7 @@ interface RadioRepository {
     suspend fun getAllRadios(): List<RadioDTO>
     suspend fun getRadioByName(radioName: String): RadioBO?
     suspend fun findRadiosByPrompt(prompt: String): List<RadioBO>
+    suspend fun findRadiosByPromptPaginated(prompt: String, page: Int): RadioPageBO
     suspend fun getRadiosByCountry(countryCode: String): List<RadioBO>
     suspend fun getRadioPaginated(page: Int): RadioPageBO
     suspend fun fetchAndSaveRemoteRadios()
@@ -38,6 +40,9 @@ class RadioRepositoryImpl(
     override suspend fun findRadiosByPrompt(prompt: String): List<RadioBO> =
         radioLocalDataSource.findRadiosByName(prompt).toBO()
 
+    override suspend fun findRadiosByPromptPaginated(prompt: String, page: Int): RadioPageBO =
+        radioLocalDataSource.findRadiosByPromptPaginated(prompt, page).toBO()
+
     override suspend fun getRadiosByCountry(countryCode: String): List<RadioBO> {
         TODO("Not yet implemented")
     }
@@ -53,10 +58,11 @@ class RadioRepositoryImpl(
             .toBO()
             .asSequence()
             .map {
-                it.copy(radioName = it.radioName.trim().replace(Regex("[\\t\\n\"\'`]"), ""))
+                it.copy(radioName = it.radioName.replace(Regex("([\\t\\n\"'()+`])"), "").trim())
             }.filter {
                 it.radioName.isNotBlank()
             }
+            .distinctBy { it.radioName }
             .sortedBy { it.radioName }
             .toList()
             .toDBO()
