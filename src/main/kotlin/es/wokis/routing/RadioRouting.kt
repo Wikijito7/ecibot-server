@@ -2,7 +2,6 @@ package es.wokis.routing
 
 import es.wokis.data.mapper.radio.toDTO
 import es.wokis.data.repository.radio.RadioRepository
-import es.wokis.services.ImageService
 import es.wokis.utils.paginated
 import es.wokis.utils.requireString
 import io.ktor.http.*
@@ -20,7 +19,7 @@ fun Routing.setUpRadioRouting() {
         }
 
         paginated { page ->
-            val radioPage = radioRepository.getRadioPaginated(page).takeIf { it.radios.isNotEmpty() }?.toDTO()
+            val radioPage = radioRepository.getRadiosPaginated(page).takeIf { it.radios.isNotEmpty() }?.toDTO()
             radioPage?.let {
                 call.respond(HttpStatusCode.OK, radioPage)
             } ?: call.respond(HttpStatusCode.NotFound, "Page not found")
@@ -37,23 +36,54 @@ fun Routing.setUpRadioRouting() {
             }
         }
 
-        route("/find/{name}") {
-            get {
-                requireString("name") { name ->
-                    val radios = radioRepository.findRadiosByPrompt(name).toDTO()
-                    radios.takeIf { it.isNotEmpty() }?.let {
-                        call.respond(HttpStatusCode.OK, radios)
-                    } ?: call.respond(HttpStatusCode.NotFound, "No radio found")
+        route("/find") {
+            route("/name/{name}") {
+                get {
+                    requireString("name") { name ->
+                        val radios = radioRepository.findRadiosByPrompt(name).toDTO()
+                        radios.takeIf { it.isNotEmpty() }?.let {
+                            call.respond(HttpStatusCode.OK, radios)
+                        } ?: call.respond(HttpStatusCode.NotFound, "No radio found")
+                    }
+                }
+
+                paginated { page ->
+                    requireString("name") { name ->
+                        val radioPage = radioRepository.findRadiosByPromptPaginated(name, page).takeIf { it.radios.isNotEmpty() }?.toDTO()
+                        radioPage?.let {
+                            call.respond(HttpStatusCode.OK, radioPage)
+                        } ?: call.respond(HttpStatusCode.NotFound, "Page not found")
+                    }
                 }
             }
 
-            paginated { page ->
-                requireString("name") { name ->
-                    val radioPage = radioRepository.findRadiosByPromptPaginated(name, page).takeIf { it.radios.isNotEmpty() }?.toDTO()
-                    radioPage?.let {
-                        call.respond(HttpStatusCode.OK, radioPage)
-                    } ?: call.respond(HttpStatusCode.NotFound, "Page not found")
+            route("/countrycode/{code}") {
+                get {
+                    requireString("code") { countryCode ->
+                        val radios = radioRepository.getRadiosByCountry(countryCode).takeIf { it.isNotEmpty() }?.toDTO()
+                        radios?.let {
+                            call.respond(HttpStatusCode.OK, radios)
+                        } ?: call.respond(HttpStatusCode.NotFound, "No radio found")
+                    }
                 }
+
+                paginated { page ->
+                    requireString("code") { countryCode ->
+                        val radioPage = radioRepository.getRadiosByCountryPaginated(countryCode, page).takeIf { it.radios.isNotEmpty() }?.toDTO()
+                        radioPage?.let {
+                            call.respond(HttpStatusCode.OK, radioPage)
+                        } ?: call.respond(HttpStatusCode.NotFound, "Page not found")
+                    }
+                }
+            }
+        }
+
+        route("/countrycodes") {
+            get {
+                val countryCodes = radioRepository.getCountryCodes().takeIf { it.countryCodes.isNotEmpty() }?.toDTO()
+                countryCodes?.let {
+                    call.respond(HttpStatusCode.OK, countryCodes)
+                } ?: call.respond(HttpStatusCode.NotFound, "No country codes found")
             }
         }
     }

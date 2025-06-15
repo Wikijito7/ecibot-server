@@ -5,6 +5,7 @@ import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Projections
 import com.mongodb.client.model.Projections.computed
 import com.mongodb.client.model.Projections.include
+import com.mongodb.client.model.Sorts
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import es.wokis.data.dbo.radio.*
 import kotlinx.coroutines.flow.first
@@ -23,9 +24,10 @@ interface RadioLocalDataSource {
     suspend fun findRadiosByName(prompt: String): List<RadioDBO>
     suspend fun findRadiosByPromptPaginated(prompt: String, page: Int): RadioPageDBO
     suspend fun getNumberOfStationPagesAvailable(name: String = ""): Int
+    suspend fun getNumberOfCountryCodesPage(countryCode: String): Int
     suspend fun findRadiosByCountryCode(countryCode: String): List<RadioDBO>
-    suspend fun findRadiosByCountryCodePaginated(countryCode: String): List<RadioDBO>
-    suspend fun getCountryCodes(countryCode: String): List<CountryCodeDBO>
+    suspend fun findRadiosByCountryCodePaginated(countryCode: String, page: Int): RadioPageDBO
+    suspend fun getCountryCodes(): List<CountryCodesDBO>
 
 }
 
@@ -102,9 +104,9 @@ class RadioLocalDataSourceImpl(
         )
     }
 
-    private suspend fun findRadios(prompt: String, batchSize: Int = MAX_DOCUMENTS_LIMIT, skip: Int = 0) = radioCollection
+    private suspend fun findRadios(prompt: String, countryCode: String? = null, batchSize: Int = MAX_DOCUMENTS_LIMIT, skip: Int = 0) = radioCollection
             .aggregate<RadioDBO>(
-                listOf(
+                listOfNotNull(
                     Aggregates.unwind("\$${RadioCollectionDBO::radios.name}"),
                     Aggregates.match(
                         Filters.regex(
@@ -112,53 +114,91 @@ class RadioLocalDataSourceImpl(
                             /* pattern = */ Pattern.compile(".*${Regex.escape(prompt)}.*", Pattern.CASE_INSENSITIVE)
                         )
                     ),
+                    countryCode?.let {
+                        Aggregates.match(
+                            Filters.eq(
+                                /* fieldName = */ "${RadioCollectionDBO::radios.name}.${RadioDBO::countryCode.name}",
+                                /* value = */ countryCode
+                            )
+                        )
+                    },
                     Aggregates.skip(skip),
                     Aggregates.limit(batchSize),
-                    Aggregates.replaceRoot("\$${RadioCollectionDBO::radios.name}"),
+                    Aggregates.replaceRoot("\$${RadioCollectionDBO::radios.name}")
                 )
             )
             .toList()
 
     override suspend fun getNumberOfStationPagesAvailable(name: String): Int {
+        val fieldName = RadioDBO::radioName.name
+        return getNumberOfPages(
+            fieldName = fieldName,
+            matchFilter = Filters.regex(
+                /* fieldName = */ "${RadioCollectionDBO::radios.name}.${fieldName}",
+                /* pattern = */ Pattern.compile(".*${Regex.escape(name)}.*", Pattern.CASE_INSENSITIVE)
+            )
+        )
+    }
+
+    override suspend fun getNumberOfCountryCodesPage(countryCode: String): Int {
+        val fieldName = RadioDBO::countryCode.name
+        return getNumberOfPages(
+            fieldName = fieldName,
+            matchFilter = Filters.eq(
+                /* fieldName = */ "${RadioCollectionDBO::radios.name}.${fieldName}",
+                /* value = */ countryCode
+            )
+        )
+    }
+
+    private suspend fun getNumberOfPages(fieldName: String, matchFilter: Bson): Int {
         val count = radioCollection
-            .aggregate<RadiosCountDBO>(
+            .aggregate<CountDBO>(
                 listOf(
                     Aggregates.unwind("\$${RadioCollectionDBO::radios.name}"),
-                    Aggregates.match(
-                        Filters.regex(
-                            /* fieldName = */ "${RadioCollectionDBO::radios.name}.${RadioDBO::radioName.name}",
-                            /* pattern = */ Pattern.compile(".*${Regex.escape(name)}.*", Pattern.CASE_INSENSITIVE)
-                        )
-                    ),
-                    Aggregates.count(RadioDBO::radioName.name),
+                    Aggregates.match(matchFilter),
+                    Aggregates.count(fieldName),
                     Aggregates.project(
-                        computed(RadiosCountDBO::radiosCount.name, "\$${RadioDBO::radioName.name}")
+                        computed(CountDBO::count.name, "\$${fieldName}")
                     )
                 )
             )
             .toList()
             .firstOrNull()
-            ?.radiosCount
+            ?.count
             ?: 0
 
         return (count / PAGINATION_MAX_DOCUMENTS_LIMIT) + 1
     }
 
-    override suspend fun findRadiosByCountryCode(countryCode: String): List<RadioDBO> {
-        TODO("Not yet implemented")
+    override suspend fun findRadiosByCountryCode(countryCode: String): List<RadioDBO> = findRadios(
+        prompt = "",
+        countryCode = countryCode
+    )
+
+    override suspend fun findRadiosByCountryCodePaginated(countryCode: String, page: Int): RadioPageDBO = findRadios(
+        prompt = "",
+        countryCode = countryCode,
+        batchSize = PAGINATION_MAX_DOCUMENTS_LIMIT,
+        skip = PAGINATION_MAX_DOCUMENTS_LIMIT * (page - 1)
+    ).let {
+        RadioPageDBO(
+            currentPage = page,
+            maxPage = getNumberOfCountryCodesPage(countryCode),
+            radios = it
+        )
     }
 
-    override suspend fun findRadiosByCountryCodePaginated(countryCode: String): List<RadioDBO> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getCountryCodes(countryCode: String): List<CountryCodeDBO> = radioCollection
-        .aggregate<CountryCodeDBO>(
+    override suspend fun getCountryCodes(): List<CountryCodesDBO> = radioCollection
+        .aggregate<CountryCodesDBO>(
             listOf(
                 Aggregates.unwind("\$${RadioCollectionDBO::radios.name}"),
-                Aggregates.count(RadioDBO::countryCode.name),
+                Aggregates.group("\$${RadioCollectionDBO::radios.name}.${RadioDBO::countryCode.name}"),
                 Aggregates.project(
-                    computed(CountryCodeDBO::countryCodes.name, "\$${RadioDBO::countryCode.name}")
+                    computed(CountryCodesDBO::countryCode.name, "\$_id")
+                ),
+                Aggregates.sort(
+                    Sorts.ascending(CountryCodesDBO::countryCode.name)
                 )
             )
         )
