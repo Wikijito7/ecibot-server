@@ -28,7 +28,6 @@ interface RadioLocalDataSource {
     suspend fun findRadiosByCountryCode(countryCode: String): List<RadioDBO>
     suspend fun findRadiosByCountryCodePaginated(countryCode: String, page: Int): RadioPageDBO
     suspend fun getCountryCodes(): List<CountryCodesDBO>
-
 }
 
 private const val MAX_DOCUMENTS_LIMIT = 30
