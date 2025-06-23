@@ -30,7 +30,7 @@ interface RadioLocalDataSource {
     suspend fun getCountryCodes(): List<CountryCodesDBO>
 }
 
-private const val MAX_DOCUMENTS_LIMIT = 30
+private const val MAX_DOCUMENTS_LIMIT = 25
 private const val PAGINATION_MAX_DOCUMENTS_LIMIT = 150
 
 class RadioLocalDataSourceImpl(
