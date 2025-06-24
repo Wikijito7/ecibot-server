@@ -62,10 +62,10 @@ class RadioRepositoryImpl(
             .map {
                 it.copy(
                     radioName = it.radioName.replace(Regex("([\\t\\n\"'()+`])"), "").trim(),
-                    countryCode = it.countryCode.uppercase()
+                    countryCode = it.countryCode.uppercase().takeUnless { it.isEmpty() } ?: "UNK"
                 )
             }.filter {
-                it.radioName.isNotBlank() && it.countryCode.isNotEmpty()
+                it.radioName.isNotBlank()
             }
             .distinctBy { it.radioName }
             .sortedBy { it.radioName }

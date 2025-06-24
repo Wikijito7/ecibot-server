@@ -31,7 +31,7 @@ interface RadioLocalDataSource {
 }
 
 private const val MAX_DOCUMENTS_LIMIT = 25
-private const val PAGINATION_MAX_DOCUMENTS_LIMIT = 150
+private const val PAGINATION_MAX_DOCUMENTS_LIMIT = 90
 
 class RadioLocalDataSourceImpl(
     private val radioCollection: MongoCollection<RadioCollectionDBO>
