@@ -15,6 +15,7 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import io.ktor.util.pipeline.*
 import org.apache.commons.codec.binary.Base32
 import org.apache.commons.codec.binary.StringUtils
@@ -55,7 +56,7 @@ class TOTPService(private val userRepository: UserRepository) {
 
 }
 
-suspend inline fun PipelineContext<Unit, ApplicationCall>.withAuthenticator(user: UserBO, block: () -> Unit) {
+suspend inline fun RoutingContext.withAuthenticator(user: UserBO, block: () -> Unit) {
     val secret = user.totpEncodedSecret
     val code = call.request.header(TOTP_HEADER)
     val timeStamp = call.request.header(TIMESTAMP_HEADER)?.toLongOrNull()
@@ -94,7 +95,7 @@ inline fun checkTOTP(
     } ?: throw TotpNotFoundException
 }
 
-suspend fun PipelineContext<Unit, ApplicationCall>.respondNotAuthorization() {
+suspend fun RoutingContext.respondNotAuthorization() {
     call.response.header(AUTHENTICATOR_HEADER, GOOGLE_AUTHENTICATOR)
     call.respond(HttpStatusCode.Unauthorized, TOTPRequestDTO(GOOGLE_AUTHENTICATOR, System.currentTimeMillis()))
 }

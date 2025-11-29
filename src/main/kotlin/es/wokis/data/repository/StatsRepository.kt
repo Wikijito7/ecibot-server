@@ -1,7 +1,7 @@
 package es.wokis.data.repository
 
 import es.wokis.data.bo.StatsBO
-import es.wokis.data.datasource.stats.StatsLocalDataSource
+import es.wokis.data.datasource.local.stats.StatsLocalDataSource
 
 interface StatsRepository {
     suspend fun getStats(): List<StatsBO>

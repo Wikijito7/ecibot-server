@@ -20,7 +20,7 @@ ECIBot server is a custom API for [ecibot.wokis.es](https://ecibot.wokis.es).
 - Lastly, you can download last version of the project, check it out on [here](https://github.com/Wikijito7/ecibot-server/releases).
 
 ## How it works
-BKS is a base project made to be used on other projects for Wokis network. It has already user related routing and ready to use.
+ECIBot Server is a server for ECIBot Discord bot and ecibot.wokis.es website.
 
 You may configure some stuff on `app.conf` file. You can check it out [here](https://github.com/Wikijito7/ecibot-server/blob/master/src/main/resources/app.conf).
 

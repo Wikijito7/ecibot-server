@@ -13,3 +13,36 @@ interface SoundRepository {
     fun upVoteSound(user: UserBO, id: String)
     fun downVoteSound(user: UserBO, id: String)
 }
+
+class SoundRepositoryImpl(
+    // private val soundsLocalDataSource: SoundsLocalDataSource
+) : SoundRepository {
+
+    override fun addRawSounds(sounds: List<PartData.FileItem>, user: UserBO) {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateRawSound(sound: PartData.FileItem, user: UserBO) {
+        TODO("Not yet implemented")
+    }
+
+    override fun addSound(sound: SoundBO, user: UserBO) {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateSound(sound: SoundBO, user: UserBO) {
+        TODO("Not yet implemented")
+    }
+
+    override fun removeSound(sound: SoundBO, user: UserBO) {
+        TODO("Not yet implemented")
+    }
+
+    override fun upVoteSound(user: UserBO, id: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun downVoteSound(user: UserBO, id: String) {
+        TODO("Not yet implemented")
+    }
+}

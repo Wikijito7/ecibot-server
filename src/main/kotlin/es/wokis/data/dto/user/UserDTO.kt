@@ -1,24 +1,23 @@
 package es.wokis.data.dto.user
 
-import com.google.gson.annotations.SerializedName
 import es.wokis.data.constants.ServerConstants.EMPTY_TEXT
-import java.util.*
+import kotlinx.serialization.SerialName
 
 data class UserDTO(
-    @SerializedName("id")
+    @SerialName("id")
     val id: String,
-    @SerializedName("username")
+    @SerialName("username")
     val username: String,
-    @SerializedName("email")
+    @SerialName("email")
     val email: String,
-    @SerializedName("image")
+    @SerialName("image")
     val image: String = EMPTY_TEXT,
-    @SerializedName("lang")
+    @SerialName("lang")
     val lang: String,
-    @SerializedName("createdOn")
+    @SerialName("createdOn")
     val createdOn: Long,
-    @SerializedName("totpEnabled")
+    @SerialName("totpEnabled")
     val totpEnabled: Boolean,
-    @SerializedName("emailVerified")
+    @SerialName("emailVerified")
     val emailVerified: Boolean = false,
 )

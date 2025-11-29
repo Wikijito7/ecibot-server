@@ -1,8 +1,10 @@
 package es.wokis.data.dto.recover
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class RecoverPassRequestDTO(
-    @SerializedName("email")
+    @SerialName("email")
     val email: String
 )

@@ -1,17 +1,8 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
-val ktor_version: String by project
-val kotlin_version: String by project
-val logback_version: String by project
-val kmongo_version: String by project
-val koin_version: String by project
-val firebase_version: String by project
-val prometheus_version: String by project
-
 plugins {
     application
-    kotlin("jvm") version "1.7.21"
-    id("io.ktor.plugin") version "2.1.3"
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.plugin.serialization)
+    alias(libs.plugins.ktor.plugin)
 }
 
 group = "es.wokis"
@@ -29,43 +20,59 @@ repositories {
 }
 
 dependencies {
-    // Ktor dependencies
-    implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
-    implementation("io.ktor:ktor-serialization-gson-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-call-logging-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-cors-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-auth-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-auth-jwt-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-rate-limit:$ktor_version")
-    implementation("io.ktor:ktor-server-metrics-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-metrics-micrometer:$ktor_version")
-    implementation("io.micrometer:micrometer-registry-prometheus:$prometheus_version")
-    testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    // Ktor Server
+    implementation(libs.ktor.server.content.negotiation)
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.ktor.server.call.logging)
+    implementation(libs.ktor.server.cors)
+    implementation(libs.ktor.server.auth)
+    implementation(libs.ktor.server.auth.jwt)
+    implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.server.rate.limit)
+    implementation(libs.ktor.server.metrics)
+    implementation(libs.ktor.server.metrics.micrometer)
 
-    // Logs
-    implementation("ch.qos.logback:logback-classic:$logback_version")
+    // Ktor Client
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.client.serialization.kotlin.json)
+    implementation(libs.ktor.client.client.resources)
+    implementation(libs.ktor.client.client.auth)
 
-    // MongoDB
-    implementation("org.litote.kmongo:kmongo:$kmongo_version")
+    // Prometheus
+    implementation(libs.micrometer.registry.prometheus)
+
+    // Mongodb
+    implementation(libs.mongobd)
 
     // Koin
-    implementation("io.insert-koin:koin-ktor:$koin_version")
-    implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
+    implementation(libs.koin.ktor)
+    implementation(libs.koin.logger.slf4j)
 
-    // BCrypt
-    implementation("org.mindrot:jbcrypt:0.4")
+    // Bcrypt
+    implementation(libs.jbcrypt)
 
     // JavaMail
-    implementation("javax.mail:javax.mail-api:1.6.2")
-    implementation("com.sun.mail:javax.mail:1.6.2")
+    implementation(libs.javax.mail.api)
+    implementation(libs.javax.mail)
 
     // TOTP
-    implementation("dev.turingcomplete:kotlin-onetimepassword:2.4.0")
+    implementation(libs.kotlin.onetimepassword)
 
-    implementation("commons-codec:commons-codec:1.16.0")
+    // Commons codec
+    implementation(libs.commons.codec)
+
+    // Logs
+    implementation(libs.slf4j.api)
+    implementation(libs.slf4j.simple)
+
+    // Tests
+    testImplementation(libs.ktor.server.tests)
+    testImplementation(libs.kotlin.test.junit)
+    testImplementation(libs.ktor.client.mock)
 }
 
 ktor {

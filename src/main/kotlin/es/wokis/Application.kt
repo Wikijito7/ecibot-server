@@ -8,14 +8,22 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 
 fun main() {
-    embeddedServer(Netty, environment = applicationEngineEnvironment {
-        config = HoconApplicationConfig(ConfigFactory.load("application.conf"))
-
-        connector {
+    var host = ""
+    var port = 0
+    embeddedServer(
+        Netty,
+        environment = applicationEnvironment {
+            config = HoconApplicationConfig(ConfigFactory.load("application.conf"))
             host = config.host
             port = config.port
+        },
+        configure = {
+            connector {
+                this.host = host
+                this.port = port
+            }
         }
-    }).start(wait = true)
+    ).start(wait = true)
 }
 
 fun Application.module() {
@@ -27,4 +35,5 @@ fun Application.module() {
     configureSecurity()
     configureRateLimit()
     configureRouting()
+    configureTasks()
 }

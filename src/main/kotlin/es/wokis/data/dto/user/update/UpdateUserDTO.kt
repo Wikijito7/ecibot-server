@@ -1,10 +1,10 @@
 package es.wokis.data.dto.user.update
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
 
 data class UpdateUserDTO(
-    @SerializedName("username")
+    @SerialName("username")
     val username: String?,
-    @SerializedName("email")
+    @SerialName("email")
     val email: String?,
 )
