@@ -14,6 +14,9 @@ bcrypt = "0.4"
 slf4j = "2.0.17"
 sonarqube = "6.0.1.5171"
 jacoco = "0.8.12"
+mockk = "1.14.2"
+kotlin-coroutines-test = "1.10.1"
+junit-jupiter = "5.11.4"
 
 [libraries]
 # Ktor Server dependencies
@@ -44,7 +47,10 @@ micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-p
 
 # Test dependencies
 ktor-server-tests = { module = "io.ktor:ktor-server-tests-jvm", version.ref = "ktor-server-test" }
-kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlin-coroutines-test" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
 
 # Logs
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }

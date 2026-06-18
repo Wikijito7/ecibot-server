@@ -73,8 +73,11 @@ dependencies {
 
     // Tests
     testImplementation(libs.ktor.server.tests)
-    testImplementation(libs.kotlin.test.junit)
+    testImplementation(libs.kotlin.test)
     testImplementation(libs.ktor.client.mock)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlin.coroutines.test)
+    testImplementation(libs.junit.jupiter)
 }
 
 val shadowJarTask = tasks.named("shadowJar")

@@ -1,17 +1,23 @@
 package es.wokis.data.bo.sound
 
-import es.wokis.data.bo.user.UserBO
 
 data class SoundBO(
     val id: Long? = null,
     val displayId: String,
     val title: String,
+    val description: String = "",
     val soundUrl: String,
     val createdBy: String,
-    val thumbsUp: List<UserBO>,
-    val thumbsDown: List<UserBO>,
+    val thumbsUp: List<SoundUserBO> = emptyList(),
+    val thumbsDown: List<SoundUserBO> = emptyList(),
     val createdOn: Long,
+    val status: String = "pending",
     val reactions: List<ReactionBO> = emptyList()
+)
+
+data class SoundUserBO(
+    val id: String,
+    val displayName: String
 )
 
 data class ReactionBO(

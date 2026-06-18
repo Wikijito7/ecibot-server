@@ -6,6 +6,7 @@ import es.wokis.data.repository.radio.RadioRepository
 import es.wokis.data.repository.radio.RadioRepositoryImpl
 import es.wokis.data.repository.recover.RecoverRepository
 import es.wokis.data.repository.recover.RecoverRepositoryImpl
+import es.wokis.data.datasource.local.sound.SoundsLocalDataSource
 import es.wokis.data.repository.sound.SoundRepository
 import es.wokis.data.repository.sound.SoundRepositoryImpl
 import es.wokis.data.repository.user.UserRepository
@@ -20,7 +21,7 @@ val repositoryModule = module {
     single<RecoverRepository> { RecoverRepositoryImpl(get(), get(), get()) }
     single<StatsRepository> { StatsRepositoryImpl(get()) }
     single<SoundRepository> {
-        SoundRepositoryImpl()
+        SoundRepositoryImpl(soundsLocalDataSource = get())
     }
     single<RadioRepository> {
         RadioRepositoryImpl(
