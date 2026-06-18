@@ -3,7 +3,9 @@ package es.wokis.data.dto.sound
 import es.wokis.data.dto.user.UserDTO
 import es.wokis.utils.HashGenerator.generateHashWithSeed
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class SoundDTO(
     @SerialName("id")
     val id: Long? = null,
@@ -25,6 +27,7 @@ data class SoundDTO(
     val reactions: List<ReactionDTO>
 )
 
+@Serializable
 data class ReactionDTO(
     @SerialName("unicode")
     val unicode: String,
@@ -32,6 +35,7 @@ data class ReactionDTO(
     val addedBy: String
 )
 
+@Serializable
 data class SoundRequestDTO(
     @SerialName("title")
     val title: String,

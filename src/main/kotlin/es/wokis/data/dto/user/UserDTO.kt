@@ -2,7 +2,9 @@ package es.wokis.data.dto.user
 
 import es.wokis.data.constants.ServerConstants.EMPTY_TEXT
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class UserDTO(
     @SerialName("id")
     val id: String,
