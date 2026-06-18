@@ -1,51 +1,51 @@
 package es.wokis.data.dto.user.auth
 
-import com.google.gson.annotations.SerializedName
 import es.wokis.data.constants.ServerConstants.DEFAULT_LANG
 import es.wokis.services.GOOGLE_AUTHENTICATOR
+import kotlinx.serialization.SerialName
 
 data class LoginDTO(
-    @SerializedName("username")
+    @SerialName("username")
     val username: String,
-    @SerializedName("password")
+    @SerialName("password")
     val password: String,
     val isGoogleAuth: Boolean = false
 )
 
 data class RegisterDTO(
-    @SerializedName("username")
+    @SerialName("username")
     val username: String,
-    @SerializedName("email")
+    @SerialName("email")
     val email: String,
-    @SerializedName("password")
+    @SerialName("password")
     val password: String,
-    @SerializedName("lang")
+    @SerialName("lang")
     val lang: String = DEFAULT_LANG,
     val isGoogleAuth: Boolean = false
 )
 
 data class AuthResponseDTO(
-    @SerializedName("authToken")
+    @SerialName("authToken")
     val authToken: String
 )
 
 data class GoogleAuthDTO(
-    @SerializedName("authToken")
+    @SerialName("authToken")
     val authToken: String
 )
 
 data class ChangePassRequestDTO(
-    @SerializedName("oldPass")
+    @SerialName("oldPass")
     val oldPass: String?,
-    @SerializedName("recoverCode")
+    @SerialName("recoverCode")
     val recoverCode: String?,
-    @SerializedName("newPass")
+    @SerialName("newPass")
     val newPass: String
 )
 
 data class TOTPRequestDTO(
-    @SerializedName("authType")
+    @SerialName("authType")
     val authType: String = GOOGLE_AUTHENTICATOR,
-    @SerializedName("timestamp")
+    @SerialName("timestamp")
     val timestamp: Long,
 )

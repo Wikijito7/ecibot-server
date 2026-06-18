@@ -1,8 +1,10 @@
 package es.wokis.data.dto.response
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class AcknowledgeDTO(
-    @SerializedName("acknowledge")
+    @SerialName("acknowledge")
     val acknowledge: Boolean
 )

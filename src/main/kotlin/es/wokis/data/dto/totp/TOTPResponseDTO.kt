@@ -1,12 +1,12 @@
 package es.wokis.data.dto.totp
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
 
 data class TOTPResponseDTO(
-    @SerializedName("encodedSecret")
+    @SerialName("encodedSecret")
     val encodedSecret: String,
-    @SerializedName("totpUrl")
+    @SerialName("totpUrl")
     val totpUrl: String,
-    @SerializedName("words")
+    @SerialName("words")
     val words: List<String>
 )

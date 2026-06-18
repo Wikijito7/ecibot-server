@@ -9,7 +9,6 @@ import es.wokis.data.dto.user.auth.LoginDTO
 import es.wokis.data.dto.user.auth.RegisterDTO
 import es.wokis.data.dto.user.update.UpdateUserDTO
 import org.bson.types.ObjectId
-import org.litote.kmongo.id.toId
 import org.mindrot.jbcrypt.BCrypt
 
 fun RegisterDTO.toBO() = UserBO(
@@ -44,7 +43,7 @@ fun UserDTO.toBO() = UserBO(
 fun List<UserBO>.toDBO() = this.map { it.toDBO() }
 
 fun UserBO.toDBO() = UserDBO(
-    id = id?.let { ObjectId(it).toId() },
+    id = id?.let { ObjectId(it) },
     username = username,
     email = email,
     password = password,

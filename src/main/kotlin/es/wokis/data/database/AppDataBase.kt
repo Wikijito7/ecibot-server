@@ -5,6 +5,7 @@ import com.mongodb.MongoClientSettings
 import com.mongodb.MongoCredential
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
+import es.wokis.data.dbo.radio.RadioCollectionDBO
 import es.wokis.data.dbo.radio.RadioDBO
 import es.wokis.data.dbo.recover.RecoverDBO
 import es.wokis.data.dbo.stat.FullStatDBO
@@ -33,7 +34,7 @@ class AppDataBase {
     val verificationCollection by lazy { database.getCollection<VerificationDBO>("verification") }
     val recoverCollection by lazy { database.getCollection<RecoverDBO>("recover") }
     val statsCollection by lazy { database.getCollection<FullStatDBO>("stats") }
-    val radioCollection by lazy { database.getCollection<RadioDBO>("radios") }
+    val radioCollection by lazy { database.getCollection<RadioCollectionDBO>("radios") }
 
     companion object {
         private const val MONGODB_PREFIX = "mongodb://"

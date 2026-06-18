@@ -13,9 +13,9 @@ fun Application.configureKoin() {
         slf4jLogger()
         modules(
             listOf(
-                localDataSourceModule,
                 repositoryModule,
                 serviceModule,
+                localDataSourceModule,
                 remoteDataSourceModule
             )
         )

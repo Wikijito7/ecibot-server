@@ -1,12 +1,12 @@
 package es.wokis.data.dbo.verification
 
-import es.wokis.data.dbo.user.UserDBO
-import org.bson.codecs.pojo.annotations.BsonId
-import org.litote.kmongo.Id
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
+import org.bson.types.ObjectId
 
 data class VerificationDBO(
-    @BsonId
-    val id: Id<VerificationDBO>? = null,
+    @SerialName("_id")
+    @Contextual val id: ObjectId? = null,
     val email: String,
     val verificationToken: String,
     val timeStamp: Long,

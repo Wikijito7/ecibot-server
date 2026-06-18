@@ -1,18 +1,18 @@
 package es.wokis.data.dto.stats
 
-import com.google.gson.annotations.SerializedName
 import es.wokis.data.bo.StatsType
+import kotlinx.serialization.SerialName
 
 data class StatsDTO(
-    @SerializedName("type")
+    @SerialName("type")
     val type: StatsType,
-    @SerializedName("stats")
+    @SerialName("stats")
     val stats: List<StatDTO>
 )
 
 data class StatDTO(
-    @SerializedName("description")
+    @SerialName("description")
     val description: String?,
-    @SerializedName("quantity")
+    @SerialName("quantity")
     val quantity: Int
 )

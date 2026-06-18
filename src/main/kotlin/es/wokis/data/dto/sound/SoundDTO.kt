@@ -1,40 +1,40 @@
 package es.wokis.data.dto.sound
 
-import com.google.gson.annotations.SerializedName
 import es.wokis.data.dto.user.UserDTO
 import es.wokis.utils.HashGenerator.generateHashWithSeed
+import kotlinx.serialization.SerialName
 
 data class SoundDTO(
-    @SerializedName("id")
+    @SerialName("id")
     val id: Long? = null,
-    @SerializedName("displayId")
+    @SerialName("displayId")
     val displayId: String = generateHashWithSeed(),
-    @SerializedName("title")
+    @SerialName("title")
     val title: String,
-    @SerializedName("sound")
+    @SerialName("sound")
     val soundUrl: String,
-    @SerializedName("createdBy")
+    @SerialName("createdBy")
     val createdBy: String,
-    @SerializedName("thumbsUp")
+    @SerialName("thumbsUp")
     val thumbsUp: List<UserDTO>,
-    @SerializedName("thumbsDown")
+    @SerialName("thumbsDown")
     val thumbsDown: List<UserDTO>,
-    @SerializedName("createdOn")
+    @SerialName("createdOn")
     val createdOn: Long,
-    @SerializedName("reactions")
+    @SerialName("reactions")
     val reactions: List<ReactionDTO>
 )
 
 data class ReactionDTO(
-    @SerializedName("unicode")
+    @SerialName("unicode")
     val unicode: String,
-    @SerializedName("userId")
+    @SerialName("userId")
     val addedBy: String
 )
 
 data class SoundRequestDTO(
-    @SerializedName("title")
+    @SerialName("title")
     val title: String,
-    @SerializedName("sound")
+    @SerialName("sound")
     val sound: String
 )

@@ -2,13 +2,14 @@ package es.wokis.data.dbo.user
 
 import es.wokis.data.constants.ServerConstants
 import es.wokis.data.constants.ServerConstants.DEFAULT_LANG
-import org.bson.codecs.pojo.annotations.BsonId
-import org.litote.kmongo.Id
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
+import org.bson.types.ObjectId
 import java.util.Date
 
 data class UserDBO(
-    @BsonId
-    val id: Id<UserDBO>? = null,
+    @SerialName("_id")
+    @Contextual val id: ObjectId? = null,
     val username: String,
     val email: String,
     val password: String,

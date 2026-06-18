@@ -22,10 +22,10 @@ repositories {
 }
 
 dependencies {
-    // Ktor
+    // Ktor Server
     implementation(libs.ktor.server.content.negotiation)
     implementation(libs.ktor.server.core)
-    implementation(libs.ktor.serialization.gson)
+    implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.server.call.logging)
     implementation(libs.ktor.server.cors)
     implementation(libs.ktor.server.auth)
@@ -35,11 +35,19 @@ dependencies {
     implementation(libs.ktor.server.metrics)
     implementation(libs.ktor.server.metrics.micrometer)
 
+    // Ktor Client
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.client.serialization.kotlin.json)
+    implementation(libs.ktor.client.client.resources)
+    implementation(libs.ktor.client.client.auth)
+
     // Prometheus
     implementation(libs.micrometer.registry.prometheus)
 
     // Mongodb
-    implementation(libs.kmongo) // deprecated
     implementation(libs.mongobd)
 
     // Koin
@@ -66,6 +74,7 @@ dependencies {
     // Tests
     testImplementation(libs.ktor.server.tests)
     testImplementation(libs.kotlin.test.junit)
+    testImplementation(libs.ktor.client.mock)
 }
 
 ktor {
