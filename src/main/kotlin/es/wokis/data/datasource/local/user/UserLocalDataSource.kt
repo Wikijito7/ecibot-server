@@ -9,6 +9,7 @@ import es.wokis.data.mapper.user.toBO
 import es.wokis.data.mapper.user.toDBO
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
+import org.slf4j.LoggerFactory
 import org.bson.types.ObjectId
 import java.util.regex.Pattern
 
@@ -23,6 +24,7 @@ interface UserLocalDataSource {
 }
 
 class UserLocalDataSourceImpl(private val userCollection: MongoCollection<UserDBO>) : UserLocalDataSource {
+    private val logger = LoggerFactory.getLogger(UserLocalDataSourceImpl::class.java)
     private val getUsernameCaseInsensitive: (element: String) -> Pattern = {
         Pattern.compile("\\b$it\\b", Pattern.CASE_INSENSITIVE)
     }
@@ -59,7 +61,7 @@ class UserLocalDataSourceImpl(private val userCollection: MongoCollection<UserDB
             userCollection.insertOne(user.toDBO()).wasAcknowledged()
 
         } catch (e: Throwable) {
-            println(e.stackTraceToString())
+            logger.error("Failed to create user", e)
             false
         }
     }

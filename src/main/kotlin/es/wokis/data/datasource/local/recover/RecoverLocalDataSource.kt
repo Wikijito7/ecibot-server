@@ -7,6 +7,7 @@ import es.wokis.data.dbo.recover.RecoverDBO
 import es.wokis.data.mapper.recover.toBO
 import es.wokis.data.mapper.recover.toDBO
 import kotlinx.coroutines.flow.firstOrNull
+import org.slf4j.LoggerFactory
 import org.bson.types.ObjectId
 
 interface RecoverLocalDataSource {
@@ -18,6 +19,8 @@ interface RecoverLocalDataSource {
 class RecoverLocalDataSourceImpl(private val recoverCollection: MongoCollection<RecoverDBO>) :
     RecoverLocalDataSource {
 
+    private val logger = LoggerFactory.getLogger(RecoverLocalDataSourceImpl::class.java)
+
     override suspend fun getRecoverByToken(token: String): RecoverBO? {
         val filter = Filters.regex(RecoverDBO::recoverToken.name, token)
         return recoverCollection.find(filter).firstOrNull()?.toBO()
@@ -28,7 +31,7 @@ class RecoverLocalDataSourceImpl(private val recoverCollection: MongoCollection<
             recoverCollection.insertOne(recover.toDBO()).wasAcknowledged()
 
         } catch (e: Throwable) {
-            println(e.stackTraceToString())
+            logger.error("Failed to save recover request", e)
             false
         }
     }
@@ -38,7 +41,7 @@ class RecoverLocalDataSourceImpl(private val recoverCollection: MongoCollection<
         recoverCollection.deleteOne(filter).wasAcknowledged()
 
     } catch (e: Throwable) {
-        println(e.stackTraceToString())
+        logger.error("Failed to remove recover request $id", e)
         false
     }
 
