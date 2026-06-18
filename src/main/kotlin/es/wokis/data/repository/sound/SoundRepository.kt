@@ -114,14 +114,14 @@ class SoundRepositoryImpl(
             ?: throw SoundNotFoundException
         val userId = user.id ?: return false
         val voter = SoundUserBO(id = userId, displayName = user.username)
-        val thumbsUp = existing.thumbsUp.toMutableList()
-        val thumbsDown = existing.thumbsDown.toMutableList()
-        thumbsUp.removeAll { it.id == userId }
-        thumbsDown.removeAll { it.id == userId }
-        when (vote) {
-            "up" -> thumbsUp.add(voter)
-            "down" -> thumbsDown.add(voter)
-        }
-        return soundsLocalDataSource.updateSound(existing.copy(thumbsUp = thumbsUp, thumbsDown = thumbsDown))
+        val wasUp = existing.thumbsUp.any { it.id == userId }
+        val wasDown = existing.thumbsDown.any { it.id == userId }
+        val thumbsUp = existing.thumbsUp.filterNot { it.id == userId }
+        val thumbsDown = existing.thumbsDown.filterNot { it.id == userId }
+        val updatedThumbsUp = if (vote == "up" && !wasUp) thumbsUp + voter else thumbsUp
+        val updatedThumbsDown = if (vote == "down" && !wasDown) thumbsDown + voter else thumbsDown
+        return soundsLocalDataSource.updateSound(
+            existing.copy(thumbsUp = updatedThumbsUp, thumbsDown = updatedThumbsDown)
+        )
     }
 }

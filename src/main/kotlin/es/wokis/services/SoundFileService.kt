@@ -7,8 +7,8 @@ import io.ktor.utils.io.*
 import java.io.File
 
 object SoundFileService {
-    private val soundFolder = config.getString("soundFolder")
-    private val baseUri = config.getString("baseUri")
+    private val soundFolder by lazy { config.getString("soundFolder") }
+    private val baseUri by lazy { config.getString("baseUri") }
 
     suspend fun saveSound(displayId: String, file: PartData.FileItem): String {
         val fileName = "$displayId.${getExtension(file)}"
