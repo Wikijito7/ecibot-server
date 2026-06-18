@@ -20,16 +20,25 @@ fun Routing.setUpSoundRouting() {
     val repository by inject<SoundRepository>()
     authenticate {
         get("/sounds") {
-            val page = call.request.queryParameters["page"]?.toIntOrNull()?.coerceAtLeast(1) ?: 1
-            val limit = call.request.queryParameters["limit"]?.toIntOrNull()?.coerceIn(1, 100) ?: 20
-            val sounds = repository.getSounds(page, limit)
-            val total = repository.getSoundsCount()
-            call.respond(HttpStatusCode.OK, mapOf(
-                "data" to sounds.toDTO(),
-                "page" to page,
-                "limit" to limit,
-                "total" to total
-            ))
+            val page = call.request.queryParameters["page"]
+                ?.toIntOrNull()
+                ?.coerceAtLeast(1) ?: 1
+            val limit = call.request.queryParameters["limit"]
+                ?.toIntOrNull()
+                ?.coerceIn(1, 100) ?: 20
+            val status = call.request.queryParameters["status"]
+                ?.takeIf { it.isNotBlank() }
+            val sounds = repository.getSounds(page, limit, status)
+            val total = repository.getSoundsCount(status)
+            call.respond(
+                HttpStatusCode.OK,
+                mapOf(
+                    "data" to sounds.toDTO(),
+                    "page" to page,
+                    "limit" to limit,
+                    "total" to total
+                )
+            )
         }
 
         get("/user/sounds") {
@@ -37,20 +46,27 @@ fun Routing.setUpSoundRouting() {
                 call.respond(HttpStatusCode.Unauthorized)
                 return@get
             }
-            val page = call.request.queryParameters["page"]?.toIntOrNull()?.coerceAtLeast(1) ?: 1
-            val limit = call.request.queryParameters["limit"]?.toIntOrNull()?.coerceIn(1, 100) ?: 20
+            val page = call.request.queryParameters["page"]
+                ?.toIntOrNull()
+                ?.coerceAtLeast(1) ?: 1
+            val limit = call.request.queryParameters["limit"]
+                ?.toIntOrNull()
+                ?.coerceIn(1, 100) ?: 20
             val userId = user.id ?: run {
                 call.respond(HttpStatusCode.Unauthorized)
                 return@get
             }
             val sounds = repository.getUserSounds(userId, page, limit)
             val total = repository.getUserSoundsCount(userId)
-            call.respond(HttpStatusCode.OK, mapOf(
-                "data" to sounds.toDTO(),
-                "page" to page,
-                "limit" to limit,
-                "total" to total
-            ))
+            call.respond(
+                HttpStatusCode.OK,
+                mapOf(
+                    "data" to sounds.toDTO(),
+                    "page" to page,
+                    "limit" to limit,
+                    "total" to total
+                )
+            )
         }
 
         route("/sound") {
@@ -61,14 +77,19 @@ fun Routing.setUpSoundRouting() {
                 }
                 val multipartData = call.receiveMultipart()
                 val parts = multipartData.getAllParts()
-                val title = parts.filterIsInstance<PartData.FormItem>()
-                    .firstOrNull { it.name == "title" }?.value ?: run {
+                val title = parts
+                    .filterIsInstance<PartData.FormItem>()
+                    .firstOrNull { it.name == "title" }
+                    ?.value ?: run {
                     call.respond(HttpStatusCode.BadRequest, "Title is required")
                     return@post
                 }
-                val description = parts.filterIsInstance<PartData.FormItem>()
-                    .firstOrNull { it.name == "description" }?.value ?: ""
-                val audioFiles = parts.filterIsInstance<PartData.FileItem>()
+                val description = parts
+                    .filterIsInstance<PartData.FormItem>()
+                    .firstOrNull { it.name == "description" }
+                    ?.value ?: ""
+                val audioFiles = parts
+                    .filterIsInstance<PartData.FileItem>()
                     .filter { it.contentType.toString().startsWith("audio") }
 
                 if (audioFiles.isEmpty()) {
@@ -178,7 +199,8 @@ fun Routing.setUpSoundRouting() {
                         return@post
                     }
                     val multipartData = call.receiveMultipart()
-                    val audioFile = multipartData.getAllParts()
+                    val audioFile = multipartData
+                        .getAllParts()
                         .filterIsInstance<PartData.FileItem>()
                         .firstOrNull { it.contentType.toString().startsWith("audio") }
                         ?: run {

@@ -9,10 +9,11 @@ import es.wokis.data.mapper.sound.toBO
 import es.wokis.data.mapper.sound.toDBO
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
+import org.slf4j.LoggerFactory
 
 interface SoundsLocalDataSource {
-    suspend fun getAllSounds(page: Int, limit: Int): List<SoundBO>
-    suspend fun getSoundsCount(): Long
+    suspend fun getAllSounds(page: Int, limit: Int, status: String? = null): List<SoundBO>
+    suspend fun getSoundsCount(status: String? = null): Long
     suspend fun getSoundByDisplayId(displayId: String): SoundBO?
     suspend fun getSoundsByCreatedBy(userId: String, page: Int, limit: Int): List<SoundBO>
     suspend fun getSoundsByCreatedByCount(userId: String): Long
@@ -24,10 +25,12 @@ interface SoundsLocalDataSource {
 class SoundsLocalDataSourceImpl(
     private val soundsCollection: MongoCollection<SoundDBO>
 ) : SoundsLocalDataSource {
+    private val logger = LoggerFactory.getLogger(SoundsLocalDataSourceImpl::class.java)
 
-    override suspend fun getAllSounds(page: Int, limit: Int): List<SoundBO> {
+    override suspend fun getAllSounds(page: Int, limit: Int, status: String?): List<SoundBO> {
         val skip = (page - 1) * limit
-        return soundsCollection.find()
+        val filter = status?.let { Filters.eq(SoundDBO::status.name, it) } ?: Filters.empty()
+        return soundsCollection.find(filter)
             .sort(Sorts.descending(SoundDBO::createdOn.name))
             .skip(skip)
             .limit(limit)
@@ -35,8 +38,10 @@ class SoundsLocalDataSourceImpl(
             .map { it.toBO() }
     }
 
-    override suspend fun getSoundsCount(): Long =
-        soundsCollection.countDocuments()
+    override suspend fun getSoundsCount(status: String?): Long {
+        val filter = status?.let { Filters.eq(SoundDBO::status.name, it) } ?: Filters.empty()
+        return soundsCollection.countDocuments(filter)
+    }
 
     override suspend fun getSoundByDisplayId(displayId: String): SoundBO? {
         val filter = Filters.eq(SoundDBO::displayId.name, displayId)
@@ -59,13 +64,11 @@ class SoundsLocalDataSourceImpl(
         return soundsCollection.countDocuments(filter)
     }
 
-    override suspend fun createSound(sound: SoundBO): Boolean {
-        return try {
-            soundsCollection.insertOne(sound.toDBO()).wasAcknowledged()
-        } catch (e: Throwable) {
-            println(e.stackTraceToString())
-            false
-        }
+    override suspend fun createSound(sound: SoundBO): Boolean = try {
+        soundsCollection.insertOne(sound.toDBO()).wasAcknowledged()
+    } catch (e: Throwable) {
+        logger.error("Failed to create sound", e)
+        false
     }
 
     override suspend fun updateSound(sound: SoundBO): Boolean {
@@ -73,13 +76,10 @@ class SoundsLocalDataSourceImpl(
         return soundsCollection.replaceOne(filter, sound.toDBO()).wasAcknowledged()
     }
 
-    override suspend fun deleteSound(displayId: String): Boolean {
-        val filter = Filters.eq(SoundDBO::displayId.name, displayId)
-        return try {
-            soundsCollection.deleteOne(filter).wasAcknowledged()
-        } catch (e: Throwable) {
-            println(e.stackTraceToString())
-            false
-        }
+    override suspend fun deleteSound(displayId: String): Boolean = try {
+        soundsCollection.deleteOne(Filters.eq(SoundDBO::displayId.name, displayId)).wasAcknowledged()
+    } catch (e: Throwable) {
+        logger.error("Failed to delete sound", e)
+        false
     }
 }

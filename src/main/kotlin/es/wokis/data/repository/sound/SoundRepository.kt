@@ -12,8 +12,8 @@ import es.wokis.utils.HashGenerator
 import io.ktor.http.content.*
 
 interface SoundRepository {
-    suspend fun getSounds(page: Int, limit: Int): List<SoundBO>
-    suspend fun getSoundsCount(): Long
+    suspend fun getSounds(page: Int, limit: Int, status: String? = null): List<SoundBO>
+    suspend fun getSoundsCount(status: String? = null): Long
     suspend fun getSoundById(displayId: String): SoundBO?
     suspend fun getUserSounds(userId: String, page: Int, limit: Int): List<SoundBO>
     suspend fun getUserSoundsCount(userId: String): Long
@@ -38,11 +38,11 @@ class SoundRepositoryImpl(
     private val soundsLocalDataSource: SoundsLocalDataSource,
 ) : SoundRepository {
 
-    override suspend fun getSounds(page: Int, limit: Int): List<SoundBO> =
-        soundsLocalDataSource.getAllSounds(page, limit)
+    override suspend fun getSounds(page: Int, limit: Int, status: String?): List<SoundBO> =
+        soundsLocalDataSource.getAllSounds(page, limit, status)
 
-    override suspend fun getSoundsCount(): Long =
-        soundsLocalDataSource.getSoundsCount()
+    override suspend fun getSoundsCount(status: String?): Long =
+        soundsLocalDataSource.getSoundsCount(status)
 
     override suspend fun getSoundById(displayId: String): SoundBO? =
         soundsLocalDataSource.getSoundByDisplayId(displayId)
@@ -58,23 +58,21 @@ class SoundRepositoryImpl(
         description: String,
         audioFiles: List<PartData.FileItem>,
         user: UserBO
-    ): List<SoundBO> {
-        return audioFiles.mapNotNull { audioFile ->
-            val displayId = HashGenerator.generateHashWithSeed()
-            val soundUrl = SoundFileService.saveSound(displayId, audioFile)
-            val now = System.currentTimeMillis()
-            val sound = SoundBO(
-                displayId = displayId,
-                title = title,
-                description = description,
-                soundUrl = soundUrl,
-                createdBy = user.id ?: "",
-                createdOn = now,
-                status = "pending"
-            )
-            val created = soundsLocalDataSource.createSound(sound)
-            if (created) sound else null
-        }
+    ): List<SoundBO> = audioFiles.mapNotNull { audioFile ->
+        val displayId = HashGenerator.generateHashWithSeed()
+        val soundUrl = SoundFileService.saveSound(displayId, audioFile)
+        val now = System.currentTimeMillis()
+        val sound = SoundBO(
+            displayId = displayId,
+            title = title,
+            description = description,
+            soundUrl = soundUrl,
+            createdBy = user.id ?: "",
+            createdOn = now,
+            status = "pending"
+        )
+        val created = soundsLocalDataSource.createSound(sound)
+        if (created) sound else null
     }
 
     override suspend fun updateRawSound(

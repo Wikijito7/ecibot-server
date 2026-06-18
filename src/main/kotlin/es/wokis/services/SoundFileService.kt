@@ -1,12 +1,14 @@
 package es.wokis.services
 
 import es.wokis.plugins.config
+import es.wokis.utils.normalizeUrl
 import io.ktor.http.content.*
 import io.ktor.utils.io.*
 import java.io.File
 
 object SoundFileService {
     private val soundFolder = config.getString("soundFolder")
+    private val baseUri = config.getString("baseUri")
 
     suspend fun saveSound(displayId: String, file: PartData.FileItem): String {
         val fileName = "$displayId.${getExtension(file)}"
@@ -19,24 +21,27 @@ object SoundFileService {
             val read = channel.readAvailable(temp)
             if (read > 0) {
                 buffer.addAll(temp.take(read))
-            } else break
+            } else {
+                break
+            }
         }
         soundPath.writeBytes(buffer.toByteArray())
-        return soundPath.absolutePath
+        return "$baseUri/sound/$displayId/file".normalizeUrl()
     }
 
     fun getSoundFile(displayId: String): File? {
         val dir = File("$soundFolder/$displayId")
         if (!dir.exists()) return null
-        val file = dir.listFiles()?.firstOrNull() ?: return null
-        return file
+        return dir.listFiles()?.firstOrNull()
     }
 
     fun deleteSoundFiles(displayId: String): Boolean {
         val dir = File("$soundFolder/$displayId")
         return if (dir.exists()) {
             dir.deleteRecursively()
-        } else true
+        } else {
+            true
+        }
     }
 
     private fun getExtension(file: PartData.FileItem): String {
