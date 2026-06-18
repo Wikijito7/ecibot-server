@@ -77,10 +77,12 @@ class SoundRepositoryTest {
 
         assertTrue(result)
         coVerify {
-            dataSource.updateSound(match { sound ->
-                sound.thumbsUp.none { it.id == "user1" } &&
-                    sound.thumbsDown.any { it.id == "user1" }
-            })
+            dataSource.updateSound(
+                match { sound ->
+                    sound.thumbsUp.none { it.id == "user1" } &&
+                        sound.thumbsDown.any { it.id == "user1" }
+                }
+            )
         }
     }
 
@@ -95,10 +97,12 @@ class SoundRepositoryTest {
         repository.voteSound(alice, "sound123", "up")
 
         coVerify {
-            dataSource.updateSound(match { sound ->
-                sound.thumbsUp.none { it.id == "user1" } &&
-                    sound.thumbsDown.none { it.id == "user1" }
-            })
+            dataSource.updateSound(
+                match { sound ->
+                    sound.thumbsUp.none { it.id == "user1" } &&
+                        sound.thumbsDown.none { it.id == "user1" }
+                }
+            )
         }
     }
 
@@ -130,9 +134,11 @@ class SoundRepositoryTest {
 
         assertTrue(result)
         coVerify {
-            dataSource.updateSound(match { sound ->
-                sound.title == "New Title" && sound.description == baseSound.description
-            })
+            dataSource.updateSound(
+                match { sound ->
+                    sound.title == "New Title" && sound.description == baseSound.description
+                }
+            )
         }
     }
 
