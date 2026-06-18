@@ -2,13 +2,13 @@ package es.wokis.data.mapper.sound
 
 import es.wokis.data.bo.sound.ReactionBO
 import es.wokis.data.bo.sound.SoundBO
+import es.wokis.data.bo.sound.SoundUserBO
 import es.wokis.data.dbo.ReactionDBO
 import es.wokis.data.dbo.SoundDBO
+import es.wokis.data.dbo.SoundUserDBO
 import es.wokis.data.dto.sound.ReactionDTO
 import es.wokis.data.dto.sound.SoundDTO
-import es.wokis.data.mapper.user.toBO
-import es.wokis.data.mapper.user.toDBO
-import es.wokis.data.mapper.user.toDTO
+import es.wokis.data.dto.sound.SoundUserDTO
 
 // region dto to bo
 @JvmName("soundDTOToBO")
@@ -18,12 +18,22 @@ fun SoundDTO.toBO() = SoundBO(
     id = id,
     displayId = displayId,
     title = title,
+    description = description,
     soundUrl = soundUrl,
     createdBy = createdBy,
     thumbsUp = thumbsUp.toBO(),
     thumbsDown = thumbsDown.toBO(),
     createdOn = createdOn,
+    status = status,
     reactions = reactions.toBO(),
+)
+
+@JvmName("soundUserDTOToBO")
+fun List<SoundUserDTO>.toBO() = this.map { it.toBO() }
+
+fun SoundUserDTO.toBO() = SoundUserBO(
+    id = id,
+    displayName = displayName
 )
 
 @JvmName("reactionDTOToBO")
@@ -45,12 +55,22 @@ fun SoundBO.toDTO() = SoundDTO(
     id = id,
     displayId = displayId,
     title = title,
+    description = description,
     soundUrl = soundUrl,
     createdBy = createdBy,
     thumbsUp = thumbsUp.toDTO(),
     thumbsDown = thumbsDown.toDTO(),
     createdOn = createdOn,
+    status = status,
     reactions = reactions.toDTO()
+)
+
+@JvmName("soundUserBOToDTO")
+fun List<SoundUserBO>.toDTO() = this.map { it.toDTO() }
+
+fun SoundUserBO.toDTO() = SoundUserDTO(
+    id = id,
+    displayName = displayName
 )
 
 @JvmName("reactionBOToDTO")
@@ -72,12 +92,22 @@ fun SoundDBO.toBO() = SoundBO(
     id = id,
     displayId = displayId,
     title = title,
+    description = description,
     soundUrl = soundUrl,
     createdBy = createdBy,
     thumbsUp = thumbsUp.toBO(),
     thumbsDown = thumbsDown.toBO(),
     createdOn = createdOn,
+    status = status,
     reactions = reactions.toBO(),
+)
+
+@JvmName("soundUserDBOToBO")
+fun List<SoundUserDBO>.toBO() = this.map { it.toBO() }
+
+fun SoundUserDBO.toBO() = SoundUserBO(
+    id = id,
+    displayName = displayName
 )
 
 @JvmName("reactionDBOToBO")
@@ -90,7 +120,7 @@ fun ReactionDBO.toBO() = ReactionBO(
 
 // endregion
 
-// region dbo to bo
+// region bo to dbo
 
 @JvmName("soundBOToDBO")
 fun List<SoundBO>.toDBO() = this.map { it.toDBO() }
@@ -99,12 +129,22 @@ fun SoundBO.toDBO() = SoundDBO(
     id = id,
     displayId = displayId,
     title = title,
+    description = description,
     soundUrl = soundUrl,
     createdBy = createdBy,
     thumbsUp = thumbsUp.toDBO(),
     thumbsDown = thumbsDown.toDBO(),
     createdOn = createdOn,
+    status = status,
     reactions = reactions.toDBO(),
+)
+
+@JvmName("soundUserBOToDBO")
+fun List<SoundUserBO>.toDBO() = this.map { it.toDBO() }
+
+fun SoundUserBO.toDBO() = SoundUserDBO(
+    id = id,
+    displayName = displayName
 )
 
 @JvmName("reactionBOToDBO")

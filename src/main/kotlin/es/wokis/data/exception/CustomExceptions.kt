@@ -13,3 +13,5 @@ object TotpNotFoundException : IllegalStateException()
 object RecoverCodeNotFoundException : IllegalStateException()
 
 object UserNotFoundException : IllegalStateException()
+
+object SoundNotFoundException : IllegalStateException()

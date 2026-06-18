@@ -6,6 +6,8 @@ import es.wokis.data.datasource.local.radio.RadioLocalDataSource
 import es.wokis.data.datasource.local.radio.RadioLocalDataSourceImpl
 import es.wokis.data.datasource.local.recover.RecoverLocalDataSource
 import es.wokis.data.datasource.local.recover.RecoverLocalDataSourceImpl
+import es.wokis.data.datasource.local.sound.SoundsLocalDataSource
+import es.wokis.data.datasource.local.sound.SoundsLocalDataSourceImpl
 import es.wokis.data.datasource.local.stats.StatsLocalDataSource
 import es.wokis.data.datasource.local.stats.StatsLocalDataSourceImpl
 import es.wokis.data.datasource.local.user.UserLocalDataSource
@@ -14,6 +16,7 @@ import es.wokis.data.datasource.local.verify.VerifyLocalDataSource
 import es.wokis.data.datasource.local.verify.VerifyLocalDataSourceImpl
 import es.wokis.data.datasource.remote.radio.RadioRemoteDataSource
 import es.wokis.data.datasource.remote.radio.RadioRemoteDataSourceImpl
+import es.wokis.data.dbo.SoundDBO
 import es.wokis.data.dbo.radio.RadioDBO
 import es.wokis.data.dbo.recover.RecoverDBO
 import es.wokis.data.dbo.stat.FullStatDBO
@@ -47,6 +50,8 @@ val localDataSourceModule = module {
     single<RecoverLocalDataSource> { RecoverLocalDataSourceImpl(get(named("recoverCollection"))) }
     single<StatsLocalDataSource> { StatsLocalDataSourceImpl(get(named("statsCollection"))) }
     single<RadioLocalDataSource> { RadioLocalDataSourceImpl(get(named("radioCollection"))) }
+    single(named("soundsCollection")) { getSoundsCollection(get()) as MongoCollection<SoundDBO> }
+    single<SoundsLocalDataSource> { SoundsLocalDataSourceImpl(get(named("soundsCollection"))) }
 }
 
 val remoteDataSourceModule = module {
@@ -90,3 +95,5 @@ private fun getRecoverCollection(database: AppDataBase) = database.recoverCollec
 private fun getStatsCollection(database: AppDataBase) = database.statsCollection
 
 private fun getRadioCollection(database: AppDataBase) = database.radioCollection
+
+private fun getSoundsCollection(database: AppDataBase) = database.soundsCollection
