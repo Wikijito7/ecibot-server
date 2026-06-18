@@ -75,6 +75,12 @@ dependencies {
     testImplementation(libs.ktor.client.mock)
 }
 
+val shadowJarTask = tasks.named("shadowJar")
+tasks.named("distZip") { dependsOn(shadowJarTask) }
+tasks.named("distTar") { dependsOn(shadowJarTask) }
+tasks.named("startScripts") { dependsOn(shadowJarTask) }
+tasks.named("startShadowScripts") { dependsOn(tasks.named("jar")) }
+
 ktor {
     fatJar {
         archiveFileName.set("${rootProject.name}-${rootProject.version}.jar")

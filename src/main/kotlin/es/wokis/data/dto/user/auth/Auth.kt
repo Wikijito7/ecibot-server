@@ -3,7 +3,9 @@ package es.wokis.data.dto.user.auth
 import es.wokis.data.constants.ServerConstants.DEFAULT_LANG
 import es.wokis.services.GOOGLE_AUTHENTICATOR
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class LoginDTO(
     @SerialName("username")
     val username: String,
@@ -12,6 +14,7 @@ data class LoginDTO(
     val isGoogleAuth: Boolean = false
 )
 
+@Serializable
 data class RegisterDTO(
     @SerialName("username")
     val username: String,
@@ -24,16 +27,19 @@ data class RegisterDTO(
     val isGoogleAuth: Boolean = false
 )
 
+@Serializable
 data class AuthResponseDTO(
     @SerialName("authToken")
     val authToken: String
 )
 
+@Serializable
 data class GoogleAuthDTO(
     @SerialName("authToken")
     val authToken: String
 )
 
+@Serializable
 data class ChangePassRequestDTO(
     @SerialName("oldPass")
     val oldPass: String?,
@@ -43,6 +49,7 @@ data class ChangePassRequestDTO(
     val newPass: String
 )
 
+@Serializable
 data class TOTPRequestDTO(
     @SerialName("authType")
     val authType: String = GOOGLE_AUTHENTICATOR,
