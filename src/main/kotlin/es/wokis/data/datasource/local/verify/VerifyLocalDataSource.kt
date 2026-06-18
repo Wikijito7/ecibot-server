@@ -7,6 +7,7 @@ import es.wokis.data.dbo.verification.VerificationDBO
 import es.wokis.data.mapper.verify.toBO
 import es.wokis.data.mapper.verify.toDBO
 import kotlinx.coroutines.flow.firstOrNull
+import org.slf4j.LoggerFactory
 import org.bson.types.ObjectId
 
 interface VerifyLocalDataSource {
@@ -17,6 +18,8 @@ interface VerifyLocalDataSource {
 
 class VerifyLocalDataSourceImpl(private val verificationCollection: MongoCollection<VerificationDBO>) :
     VerifyLocalDataSource {
+
+    private val logger = LoggerFactory.getLogger(VerifyLocalDataSourceImpl::class.java)
     override suspend fun getVerificationByToken(token: String): VerificationBO? =
         verificationCollection.find(Filters.regex(VerificationDBO::verificationToken.name, token)).firstOrNull()?.toBO()
 
@@ -25,7 +28,7 @@ class VerifyLocalDataSourceImpl(private val verificationCollection: MongoCollect
             verificationCollection.insertOne(verification.toDBO()).wasAcknowledged()
 
         } catch (e: Throwable) {
-            println(e.stackTraceToString())
+            logger.error("Failed to add verification", e)
             false
         }
     }
@@ -34,7 +37,7 @@ class VerifyLocalDataSourceImpl(private val verificationCollection: MongoCollect
         verificationCollection.deleteOne(Filters.eq(VerificationDBO::id.name, ObjectId(id))).wasAcknowledged()
 
     } catch (e: Throwable) {
-        println(e.stackTraceToString())
+        logger.error("Failed to remove verification $id", e)
         false
     }
 }

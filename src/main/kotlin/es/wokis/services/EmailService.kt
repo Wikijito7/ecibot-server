@@ -7,6 +7,7 @@ import es.wokis.data.constants.ServerConstants.LANG_ES
 import es.wokis.data.repository.verify.VerifyRepository
 import es.wokis.plugins.config
 import es.wokis.utils.HashGenerator
+import org.slf4j.LoggerFactory
 import java.util.*
 import jakarta.mail.Message
 import jakarta.mail.MessagingException
@@ -90,7 +91,7 @@ class EmailService(
             }
 
         } catch (e: MessagingException) {
-            println(e.message)
+            logger.error("Failed to send email", e)
             return true
         }
         return false
@@ -108,6 +109,7 @@ class EmailService(
 
 
     companion object {
+        private val logger = LoggerFactory.getLogger(EmailService::class.java)
         private const val VERIFY_EMAIL_EN = "ECIBot - Verify Email"
         private const val VERIFY_EMAIL_ES = "ECIBot - Verificar Email"
         private const val RECOVER_PASS_EN = "ECIBot - Recover password"
